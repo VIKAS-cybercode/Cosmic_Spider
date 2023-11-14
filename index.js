@@ -23,7 +23,7 @@ socket.on('setUser', function (data) {
 var textBox = document.getElementById("name");
 var buton = document.getElementById("work");
 textBox.addEventListener("keyup", function (event) {
-    if (event.keyCode == 13) {
+    if (event.key ==='Enter') {
         buton.onclick();
     }
 });
