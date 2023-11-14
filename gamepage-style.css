@@ -137,6 +137,9 @@ h1{
     overflow: hidden;
     background: #313131;
 }
+h1{
+    color:aqua;
+}
 body{
 background-image: url('background-image2.jpg');
     background-repeat: no-repeat;
