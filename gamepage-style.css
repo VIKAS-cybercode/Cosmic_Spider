@@ -137,6 +137,12 @@ h1{
     overflow: hidden;
     background: #313131;
 }
+body{
+background-image: url('background-image2.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}
 .board{
     margin-top: 10px;
     height: 60%;
