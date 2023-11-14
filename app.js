@@ -11,7 +11,7 @@ app.get("/gamepage.html",function(req,res){
     res.sendFile(__dirname+"/gamepage.html");
    user_n="";}
 });
-app.get('/index-style.css',function(req,res{
+app.get('/index-style.css',function(req,res){
     res.sendFile(__dirname+"/index-style.css");
 });
 app.get('/gamepage-style.css', function(req, res) {
