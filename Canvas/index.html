@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="board">
+        <div class="board-div" id="clock">Clock</div>
+        <hr class="h-line">
+        <h1>LeaderBoard</h1>
+        <div class="board-div" id="player-1">Player-1</div>
+        <div class="board-div" id="player-2">Player-2</div>
+        <div class="board-div" id="player-3">Player-3</div>
+        <div class="board-div" id="player-4">Player-4</div>
+        <div class="board-div" id="player-5">Player-5</div>
+        
+    </div>
+    <div class="field">
+        <div class="bar">
+            <div class="word"><h1>word goes here</h1></div>
+        </div>
+        <canvas id="canvas" style="cursor: url('Curser/pencil-solid\ \(1\).svg') 4 100 , default;"></canvas>
+        <div class="tools">
+            <button onClick="undo_last()" type="button" class="button">Undo</button>
+            <button onClick="redo_last()" type="button" class="button">Redo</button>
+            <button onClick="clear_canvas()" type="button" class="button">Clear</button>
+
+            <div onClick="change_shape(this)" class="shape-field" id="rectangle"><i class="fa-sharp fa-solid fa-square fa-lg" style="color: #30aefd;"></i></div>
+            <div onClick="change_shape(this)" class="shape-field" id="triangle"><i class="fa-solid fa-caret-up fa-2xl" style="color: #30aefd;"></i></div>
+            <div onClick="change_shape(this)" class="shape-field" id="circle"><i class="fa-solid fa-circle fa-lg" style="color: #30aefd;"></i></div>
+            <div onClick="change_shape(this)" class="shape-field" id="line"><i class="fa-sharp fa-solid fa-lines-leaning fa-lg" style="color: #30aefd;"></i></div>
+            <div onClick="change_shape(this)" class="shape-field" id="pencil"><i class="fa-solid fa-pencil fa-lg" style="color: #30aefd;"></i></div>
+            <div onClick="change_shape(this)" class="shape-field" id="fill"><i class="fa-solid fa-fill-drip fa-lg" style="color: #30aefd;"></i></div>
+
+            <input onInput="draw_color = this.value" type="color" class="color-picker">
+            <input onInput="draw_width = this.value" type="range" min="1" max="50" class="pen-range" value="2">
+            <!-- -----change------ -->
+            <div onclick="save_img(this)" class="shape-field" id="save"><i class="fa-solid fa-download fa-lg" style="color: #30aefd;"></i></div>
+
+
+        </div>
+    </div>
+    <div class="chat">
+        <div class="chat-div" id="round-number">round number</div>
+        <hr class="h-line">
+        <h1>chat</h1>
+        <div class="chat-div" id="chat-box">chat box</div>
+        <div class="chat-div" id="chat-container">chat container</div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
