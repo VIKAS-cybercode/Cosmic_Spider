@@ -5,7 +5,7 @@ html,body{
 }
 body {
     margin-left: 15px;
-    background-image: url('img/background-image2.jpg');
+    background-image: url('background-image2.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
