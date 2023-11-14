@@ -4,19 +4,47 @@ var io=require("socket.io")(http);
 
 var user_n="";
 app.get("/",function(req,res){
-    res.sendFile(__dirname+"/homePage.html");
+    res.sendFile(__dirname+"/index.html");
 });
 app.get("/gamepage.html",function(req,res){
    if(user_n){
     res.sendFile(__dirname+"/gamepage.html");
    user_n="";}
 });
-app.get('/style.css', function(req, res) {
-    res.sendFile(__dirname + "/" + "style.css");
+app.get('/index-style.css',function(req,res{
+    res.sendFile(__dirname+"/index-style.css");
+});
+app.get('/gamepage-style.css', function(req, res) {
+    res.sendFile(__dirname + "/" + "gamepage-style.css");
   });
 app.get('/main.js',function(req,res){
    res.sendFile(__dirname+"/main.js");
-})  
+}); 
+app.get('/favicon.ico',function(req,res){
+   res.sendFile(__dirname+"/favicon.ico");
+}); 
+app.get('/background-image2.jpg',function(req,res){
+   res.sendFile(__dirname+"/background-image2.jpg");
+});
+app.get('/index.js',function(req,res){
+   res.sendFile(__dirname+"/index.js");
+});
+app.get('/login.html',function(req,res){
+   res.sendFile(__dirname+"/login.html");
+});
+app.get('/login.css',function(req,res){
+   res.sendFile(__dirname+"/login.css");
+});
+app.get('/login.gif',function(req,res){
+   res.sendFile(__dirname+"/login.gif");
+});
+app.get('/signup.html',function(req,res){
+   res.sendFile(__dirname+"/signup.html");
+});
+app.get('/signup.css',function(req,res){
+   res.sendFile(__dirname+"/signup.css");
+});
+
 
 users=[];
 broadcastt=[];
