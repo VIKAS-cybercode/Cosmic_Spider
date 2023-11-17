@@ -1,233 +1,186 @@
-/* body{
-    background-image: url('https://images.unsplash.com/photo-1464802686167-b939a6910659?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') ;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    margin:0;
-    padding:0;
-    height:100%;
-    overflow:hidden;
-    color:black;
-}
-h1{
-    background:#7f7FD5;
-    background:-webkit-linear-gradient(to right,#91EAE4,#86A8E7,#7F7FD5);
-    background:linear-gradient(to right,#91EAE4,#86A8E7,#7F7FD5);
-    background-clip:text;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-#player{
-    
-    
-    background-color:yellow;
-    
-}
-#p1{
-    background-color:green;
-    display:inline-block;
-    display:flex;
-    
-}
-.p2{
-    background-color: blue;
-    display:inline-block;
-    display:flex;
-}
-
-.container {
-    margin:auto;
-    margin-left:10px;
-    width:90%;
-    display:flex;
-    justify-content: space-between;
-    
-}
-
-#middle {
-    background-color: white;
-    display: flex;
-    flex-direction: row;
-    width: calc(100% - 200px);
-    height: 700px;
-    
-}
-
-#toolbar {
-    height: 100%;
-    width: 70px;
-    border: 2px solid black;
-    background-color:gray;
-}
-
-.drawing-board {
-    background-color: white;
-    width: calc(100% - 0 300px 0 70px);
-    height: 100%;
-    border:1px grey solid;
-    display:flex;
-    
-}
-
-.chat-box {
-    background-color: gray;
-    width: calc(100% - 970px);
-    display: flex;
-    flex-direction: column;
-    border: 2px solid black;
-    
-}
-
-.chat {
-    flex-grow: 1;
-    border: 2px solid black;
-    
-}
-
-#messages-container {
-    height: 80%;
-    border: 2px solid black;
-}
-#toolbar *{
-    margin-bottom:6px;
-
-}
-#toolbar label{
-    font-size:12px;
-}
-#toolbar input{
-    width:100%;
-}
-#toolbar button{
-    background-color:#1565c0;
-    border:none;
-    border-radius:4px;
-    color:white;
-    padding:2px;
-}
-#message{
-    height:15%;
-    background-color: rgb(255, 255, 255);
-}
-#eraser{
-    height:30px;
-    width:30px;
-    margin-top:5px;
-    margin-left:5px;
-    padding-left:3px;
-    
-}
-#clear{
-    margin-top:10px;
-    margin-left:3px;
-    width:63px;
-}
- */
-
-/* new replacable*/
- html, body {
-    height: 100%;
-    width: 100%;
+*{
     margin: 0;
-    padding:0 10px 0;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    overflow: hidden;
-    background: #313131;
+    padding: 0;
+    box-sizing: border-box;
 }
-h1{
-    color:aqua;
+html,body{
+    width: 100vw;
+    height:100vh;   
 }
-body{
-background-image: url('background-image2.jpg');
+body {
+    background-image: url('background-image2.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
+    height: 100vh;
+    display: flex;
+    gap: 2px;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 7px;
 }
-.board{
-    margin-top: 10px;
-    height: 60%;
-    width: 200px;
+.logo{
+    width: 100%;
+}
+.logo-link{
+    width: 30%;
+}
+.wrapper{
+    height: 90%;
+    width: 95%;
     display: flex;
     flex-direction: column;
-    align-items: self-start;
-    border:solid 2px black;
-    border-radius: 2%;
-}
-
-.board-div{
-    height: 100px;
-    width:80%;
+    gap: 10px;
+    
+}   
+.top-bar {
+    width: 100%;
+    height: 10%;
+    background-color: rgb(0, 157, 255);
+    border-radius: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+.board-clock{
+    display: flex;
+    justify-content: center;
+    width:11%;
 }
 #clock{
-    height: 50px;
-    width: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-}
-.h-line{
-    size: 5px;
-    color:white;
-    width:100%;
-    margin-bottom: 0;
-}
-.bar{
-    height: 60px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.word{
-    height : 50px;
-    display: flex;
-    align-items: center;
-}
-.gs{
-    position:relative;
-    left:200px;
-}
-.field{
-    margin:10px 10px 10px;
-    padding:2px;
-    border: solid 5px white;
-    border-radius: 1%;
-}
-canvas{
-    box-shadow: -3px 2px 15px 6px black;
-    cursor: pointer;
-    align-self:center;
     
 }
-
+#running-time{
+    font-size: 25px;
+    font-weight: 600;
+    color: white;
+}
+.word{
+    height: 100%;
+    width: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.start-game{
+    display: flex;
+    justify-content: center;
+    width: 20%;
+}
+.content{
+    display: flex;
+    flex-direction: row;
+    height: 90%;
+    gap: 10px;
+}
+.leaderboard {
+    width: 15%;
+    height: 70%;
+    background-color:gold;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.ldb{
+    color: white;
+    font-family: 'Architects Daughter', cursive;
+    margin-top: 20px;
+}
+.ldb-clock{
+    color: white;
+    font-family: 'Architects Daughter', cursive;
+    margin-top: 20px;
+}
+.ldb1{
+    color: black;
+    margin-top: 20px;
+    font-family: 'Architects Daughter', cursive;
+    font-size: 30px;
+}
+.ldb2{
+    margin-left: 15px;
+    font-family: 'Architects Daughter', cursive;
+}
+.board-div{
+    height: 50px;
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border:2px solid white;
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+.left-player{
+    
+}
+.chat-player-left{
+    font-weight: 700;
+}
+#player-name{
+    font-size: 20px; 
+}
+.player-left{
+    font-size: 20px;
+}
+p{
+    font-size:25px;
+}
+.h-line{
+    border:2px solid black;
+    width:80%;
+    align-self: center;
+}
+.h-line1{
+    border:2px solid black;
+    width:80%;
+    align-self: center;
+    margin-top: 1px ;
+}
+.draw-board{
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+    height: 100%;
+    border-radius: 8px;
+}
+#canvas{
+    height:100%;
+    width: 100%;
+    cursor: pointer;
+    
+}
 .tools{
+    width: 100%;
+    height: 12%;
     display: flex;
     justify-content: center;
     flex-direction: row;
     margin-top: 10px;
+    background-color: rgb(0, 157, 255);
+    border-radius: 10px;
 }
 
-.tools .button{
+.button{
     align-self: center;
     width: 50px;
     height: 40px;
     border: 2px solid white;
     cursor:pointer;
     color: white;
-    background:#222;
+    background-color:#222;
+    border-radius: 5px;
     font-weight: bold;
     margin: 0 10px;    
 }
 
-.tools .shape-field{
+.shape-field{
     height: 40px;
     width: 40px;
     cursor: pointer;
@@ -241,8 +194,6 @@ canvas{
     align-self: center;
     margin: 0 10px; 
 }
-
-
 
 .color-picker{
     align-self: center;
@@ -258,39 +209,56 @@ canvas{
 }
 
 .chat{
-    margin-top: 10px;
-    height: 80%;
-    width: 250px;
-    border: solid 2px black;
-    border-radius: 2%;
+    background-color:white;
+    border-radius:10px;
+    height:100%;
+    width: 20%;
     display: flex;
     flex-direction: column;
-    align-items:center;
+    
 }
 
 .chat-div{
-    width:80%;
+    width:100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    
+    margin-top: 0;
 }
 
+.chat-text{
+    margin-left: 10px;
+}
 #round-number{
     height:60px;
     display:flex;
     align-items: center;
+    color: black;
+    font-family: 'Architects Daughter', cursive;
+    margin-top: 20px;
+    font-weight: 600;
 }
 
 #chat-box{
     display: flex;
     flex-direction: row;
+    gap: 8px;
 }
-
 #chat-container{
     margin-top:2px;
-    height:60%;
+    height:80%;
+    margin-left: 10px;
 }
-
+.btn{
+    size: 30px;
+    
+}
+.btn1{
+    background-color: gold;
+    color: black;
+}
+.user-message{
+    text-align: left;
+}
 
 
