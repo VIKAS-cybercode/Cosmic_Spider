@@ -5,7 +5,280 @@
 }
 html,body{
     width: 100vw;
+    height:100vh;   *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,body{
+    width: 100vw;
     height:100vh;   
+}
+body {
+    background-image: url('background-image2.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    height: 100vh;
+    display: flex;
+    gap: 2px;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 7px;
+}
+.logo{
+    width: 100%;
+}
+.logo-link{
+    width: 30%;
+}
+.wrapper{
+    height: 90%;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}   
+.top-bar {
+    width: 100%;
+    height: 10%;
+    background-color: rgb(0, 157, 255);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.board-clock{
+    display: flex;
+    justify-content: center;
+    width:11%;
+}
+/* #clock{
+    
+} */
+#running-time{
+    font-size: 25px;
+    font-weight: 600;
+    color: white;
+}
+.word{
+    height: 100%;
+    width: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.start-game{
+    display: flex;
+    justify-content: center;
+    width: 20%;
+}
+.content{
+    display: flex;
+    flex-direction: row;
+    height: 90%;
+    
+}
+.leaderboard {
+    width: 17%;
+    height: 70%;
+    background-color:gold;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.ldb{
+    color: white;
+    font-family: 'Architects Daughter', cursive;
+    margin-top: 20px;
+}
+.ldb-clock{
+    color: white;
+    font-family: 'Architects Daughter', cursive;
+    margin-top: 20px;
+}
+.ldb1{
+    color: black;
+    margin-top: 20px;
+    font-family: 'Architects Daughter', cursive;
+    font-size: 30px;
+}
+.ldb2{
+    margin-left: 15px;
+    font-family: 'Architects Daughter', cursive;
+}
+.board-div{
+    height: 50px;
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border:2px solid white;
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+/* .left-player{
+    
+} */
+.chat-player-left{
+    font-weight: 700;
+}
+#player-name{
+    font-size: 20px; 
+}
+.player-left{
+    font-size: 20px;
+}
+p{
+    font-size:25px;
+}
+.h-line{
+    border:2px solid black;
+    width:80%;
+    align-self: center;
+}
+.h-line1{
+    border:2px solid black;
+    width:80%;
+    align-self: center;
+    margin-top: 1px ;
+}
+.draw-board{
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+    height: 100%;
+    border-radius: 8px;
+}
+canvas{
+    height:100%;
+    /* width: 100%;   */
+    align-self:center;
+    
+}
+.tools{
+    width: 97.5%;
+    height: 12%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-top: 10px;
+    background-color: rgb(0, 157, 255);
+    border-radius: 10px;
+    align-self:center;
+}
+
+.button{
+    align-self: center;
+    width: 50px;
+    height: 40px;
+    border: 2px solid white;
+    cursor:pointer;
+    color: white;
+    background-color:#222;
+    border-radius: 5px;
+    font-weight: bold;
+    margin: 0 10px;    
+}
+
+.shape-field{
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 2px solid white;
+    align-self: center;
+    margin: 0 10px; 
+}
+
+.selected{
+    scale: 1.2;
+    background-color: white;
+}
+
+.color-picker{
+    align-self: center;
+    margin: 0 10px; 
+    height: 50px;
+    width: 50px;
+    margin: 2px;
+    border: white solid 1px;
+    
+}
+
+.pen-range{
+    align-self: center;
+    margin: 0 10px; 
+    width:80px;
+}
+
+.chat{
+    background-color:white;
+    border-radius:10px;
+    height:100%;
+    width: 23%;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.chat-div{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    
+    margin-top: 0;
+}
+
+.chat-text{
+    margin-left: 10px;
+}
+#round-number{
+    height:60px;
+    display:flex;
+    align-items: center;
+    color: black;
+    font-family: 'Architects Daughter', cursive;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+#chat-box{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+#chat-container{
+    margin-top:2px;
+    height:80%;
+    margin-left: 10px;
+}
+.btn{
+    size: 30px;
+    
+}
+.btn1{
+    background-color: gold;
+    color: black;
+}
+.user-message{
+    text-align: left;
+}
+
+
+
 }
 body {
     background-image: url('background-image2.jpg');
