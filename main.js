@@ -99,11 +99,27 @@ let paths_r = [];
 
 let draw_shape = "pencil";
 
+// let current_curser="C:\Users\LENOVO\Desktop\Cosmic Spider\cosmic_spider-main\Curser\pencil.svg";
+// canvas.style.cursor = current_curser;
+
 function change_shape(element){
+    // current_curser="C:\Users\LENOVO\Desktop\Cosmic Spider\cosmic_spider-main\Curser" + "\\" + element.id +" .svg";
+    // canvas.style.cursor = current_curser;
     draw_shape = element.id;
     socket.emit("change_shapeC",draw_shape);
 }
 
+//to hover the selected shape
+document.getElementById("pencil").classList.add("selected");
+function change_shape(element){
+    draw_shape = element.id;
+    let selected_item = document.getElementById(draw_shape);
+    let other_items = document.getElementsByClassName("shape-field");
+    for(let i = 0; i < other_items.length; i++){
+        other_items[i].classList.remove("selected");
+    }
+    selected_item.classList.add("selected");
+}
 // function scale_up(element){
 //     element.style.height = "60px"; // Increase the height
 //     element.style.width = "60px"; // Increase the width
@@ -435,6 +451,14 @@ function redo_last(){
 //undo and redo function are not working for paths array
 
 
+//to download image
+function save_img(element){
+    let dataURL = canvas.toDataURL('image/png');
+    let link = document.createElement('a');
+    link.download = 'my-image.png';
+    link.href = dataURL;
+    link.click();
+}
 
 //socket function
 
