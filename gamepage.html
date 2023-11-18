@@ -49,8 +49,8 @@
             </div>
 
             <div class="draw-board">
-                <canvas id="canvas"></canvas>
-
+                <canvas id="canvas" style="cursor: url('Curser/pencil-solid\ \(1\).svg') 4 100, default;"   ></canvas>
+                
                 <div class="tools">
                     <button onClick="undo_last()" type="button" class="button">Undo</button>
                     <button onClick="redo_last()" type="button" class="button">Redo</button>
@@ -72,7 +72,7 @@
                     <input onInput="draw_color = this.value" type="color" class="color-picker">
                     <input onInput="draw_width = this.value" type="range" min="1" max="100" class="pen-range" value="2">
 
-                    <div class="shape-field" id=""><i class="fa-solid fa-share fa-lg" style="color: gold;"></i></div>
+                    <div onclick="save_img(this)" class="shape-field" id="save"><i class="fa-solid fa-download fa-lg" style="color: gold;"></i></div>
                 </div>
             </div>
 
