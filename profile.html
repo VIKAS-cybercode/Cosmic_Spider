@@ -1,11 +1,12 @@
 <html>
-
-<head>
-  <title>
-    Profile
-  </title>
-
-  <!-- favicon link -->
+    <head>
+        <title>
+          Profile
+        </title>
+        <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+        <!-- favicon link -->
   <link rel="stylesheet" href="favicon.ico">
   <!-- bootstrap link -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -17,42 +18,47 @@
     href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Edu+TAS+Beginner:wght@500&family=Merriweather:wght@300&family=Montserrat:wght@100&family=Sacramento&family=Satisfy&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="profile-style.css">
-
-</head>
-
-<body>
-  <div class="page">
-    <a href="index.html" class="logo-link"><img class="logo" src="logo-gamepage.gif" alt=""></a>
-    <div class="wrapper">
-
-      <div class="col1">
-        <div class="profile-img">
-          <img class="profile-image" src="https://wallpapers.com/images/hd/gaming-profile-pictures-tmjjc9v0w80azoeh.jpg"
-            alt="">
+        <link rel="stylesheet" href="profile-style.css">
+    </head>
+    <body>
+      <!-- <div id="profile"></div>
+      <h1>profile page</h1>
+      <button type="button" class="btn btn-success btn-lg" id="" onclick="gameEnter()"><strong>Enter in Game</strong></button> -->
+      <div class="page">
+        <a href="index.html" class="logo-link"><img class="logo" src="logo-gamepage.gif" alt=""></a>
+        <div class="wrapper">
+    
+          <div class="col1">
+            <div class="profile-img">
+              <img class="profile-image" src="https://wallpapers.com/images/hd/gaming-profile-pictures-tmjjc9v0w80azoeh.jpg"
+                alt="">
+            </div>
+            <div class="friends">
+              <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 600;">FRIENDS</h1>
+              <hr style="border:2px solid black;align-self: center;">
+            </div>
+          </div>
+    
+          <div class="col2">
+            <div class="playerstat">
+              <div class="playerdata">
+                <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Username:<div id="profile"></div></h1>
+                <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Total games played:</h1>
+                <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Highest Score</h1>
+              </div>
+            </div>
+            <div class="last3">
+              <div class="playerdata">
+                <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Last 3 games:</h1>
+              </div>
+            </div>
+          </div>
+    
         </div>
-        <div class="friends">
-          <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 600;">FRIENDS</h1>
-          <hr style="border:2px solid black;align-self: center;">
-        </div>
+        <button type="button" class="btn btn-success btn-lg" id="" onclick="gameEnter()"><strong>Enter in Game</strong></button>
       </div>
 
-      <div class="col2">
-        <div class="playerstat">
-          <div class="playerdata">
-            <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Username:</h1>
-            <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Total games played:</h1>
-            <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Highest Score</h1>
-          </div>
-        </div>
-        <div class="last3">
-          <div class="playerdata">
-            <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Last 3 games:</h1>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</body>
-
+      
+      <script src="profile.js"></script>
+    </body>
 </html>
