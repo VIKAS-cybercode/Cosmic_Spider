@@ -99,15 +99,16 @@ let paths_r = [];
 
 let draw_shape = "pencil";
 
-// let current_curser="C:\Users\LENOVO\Desktop\Cosmic Spider\cosmic_spider-main\Curser\pencil.svg";
-// canvas.style.cursor = current_curser;
+let current_curser="Curser/pencil.svg";
+canvas.style.cursor = 'url(' + current_curser + ') 4 100, auto';
 
 function change_shape(element){
-    // current_curser="C:\Users\LENOVO\Desktop\Cosmic Spider\cosmic_spider-main\Curser" + "\\" + element.id +" .svg";
-    // canvas.style.cursor = current_curser;
+    current_curser="Curser/" + element.id + ".svg";
+    canvas.style.cursor = 'url(' + current_curser + '), auto';
     draw_shape = element.id;
     socket.emit("change_shapeC",draw_shape);
 }
+
 
 //to hover the selected shape
 document.getElementById("pencil").classList.add("selected");
