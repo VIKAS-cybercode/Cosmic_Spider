@@ -58,6 +58,12 @@ app.get('/login.html',function(req,res){
  app.get('/profile.html',function(req,res){
    res.sendFile(__dirname+"/profile.html");
  })
+ app.get('/profile.js',function(req,res){
+   res.sendFile(__dirname+"/profile.js")
+ })
+ app.get('/profile-style.css',function(req,res){
+   res.sendFile(__dirname+"/profile-style.css");
+ })
 
 
 users=[];
@@ -66,6 +72,7 @@ SID=[];
 let myMap1=new Map();
 arr1=['apple', 'banana', 'car', 'dog', 'elephant', 'fan', 'grape', 'hat', 'ice cream', 'jacket', 'kettle', 'lamp', 'mango', 'notebook', 'orange', 'pencil', 'quilt', 'rabbit', 'spoon', 'table', 'umbrella', 'vase', 'watermelon', 'xylophone', 'yacht', 'zebra', 'ant', 'ball', 'cat', 'duck', 'eagle', 'fish', 'giraffe', 'horse', 'iguana', 'jackal', 'kangaroo', 'lion', 'monkey', 'nest', 'owl', 'parrot', 'quail', 'rat', 'snake', 'tiger', 'unicorn', 'vulture', 'wolf', 'x-ray fish', 'yak', 'zebu', 'airplane', 'boat', 'cycle', 'drum', 'earphone', 'flute', 'guitar', 'harmonica', 'ipad', 'juicer', 'keyboard', 'laptop', 'mobile', 'nail cutter', 'oven', 'piano', 'quiver', 'ruler', 'scissors', 'television', 'utensils', 'violin', 'washing machine', 'xerox machine', 'yoyo', 'zipper', 'alarm clock', 'basket', 'candle', 'diary', 'eraser', 'fork', 'glass', 'hammer', 'ink', 'jug', 'knife', 'lock', 'mirror', 'needle', 'oil can', 'pillow', 'quartz', 'rose', 'soap', 'toothbrush', 'umbrella', 'violin', 'wallet', 'xmas tree', 'yogurt', 'zip'];
 guessed_users=[];
+var user_id;
 
 var socket1;
 io.on('connection',function(socket){
@@ -109,6 +116,7 @@ socket.on('feed-d',function(data){
     }
  })
  socket.on('setL',function(data){
+   console.log(data+"*********");
    if(broadcastt.indexOf(data)<0){
     socket.broadcast.emit('setLead',data)
     broadcastt.push(data);
@@ -201,6 +209,14 @@ socket.on('give_scoreC',function(){
    }
    guessed_users.length=0;
 })
+//---------------------------profile page socket work------------------------------------------//
+socket.on('getname',function(){
+   console.log(user_id+"*");
+   socket.emit('setname',user_id);
+})
+socket.on('id-name',function(data){
+   users.push(data);
+})
 });
 
 app.use(express.urlencoded({extended:false}))
@@ -217,6 +233,7 @@ app.post("/signup", async (req, res) => {
    try {
      const check = await collection.findOne({ name: req.body.name });
      if (check && check.password == req.body.password) {
+     user_id=req.body.name;
       res.redirect("/profile.html");
      } else {
       res.redirect("/login.html");
