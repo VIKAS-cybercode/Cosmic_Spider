@@ -14,26 +14,20 @@
 
 <body>
   <div class="login">
-    <img src="img/background-image2.jpg" alt="" class="bg">
-    <form action="" class="login-form">
+    <img src="background-image2.jpg" alt="" class="bg">
+    <form action="/login" method="post" class="login-form">
       <h1 class="title">Login</h1>
       <div class="login-fields">
         <div class="login-box">
-          <input type="email" placeholder="Email ID" required class="login-input">
+          <input type="text" name="name" placeholder="enter user name" required class="login-input">
           <i class="ri-mail-fill"></i>
         </div>
 
         <div class="login-box">
-          <input type="password" placeholder="Password" required class="login-input">
+          <input type="password" name="password" placeholder="Password" required class="login-input">
           <i class="ri-lock-fill"></i>
         </div>
 
-        <div class="check">
-          <div class="check-box">
-            <input type="checkbox" class="check-input" id="user-check">
-            <label for="user-check" class="check-label"> Remember me</label>
-          </div>
-        </div>
         <button class="login-button" type="submit">Login</button>
         <div class="separator">
           <hr class="line">
