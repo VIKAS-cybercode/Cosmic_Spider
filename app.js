@@ -1,56 +1,70 @@
 var app=require("express")();
 var http=require("http").Server(app);
 var io=require("socket.io")(http);
+const express=require("express");
+app.use(express.json());
+const collection=require("./mongodb")
+
 
 var user_n="";
 app.get("/",function(req,res){
-    res.sendFile(__dirname+"/index.html");
+   res.sendFile(__dirname+"/index.html");
+});
+app.get("/index.html",function(req,res){
+   res.sendFile(__dirname+"/index.html");
 });
 app.get("/gamepage.html",function(req,res){
-   if(user_n){
-    res.sendFile(__dirname+"/gamepage.html");
-   user_n="";}
+//   if(user_n){
+   res.sendFile(__dirname+"/gamepage.html");
+//   user_n="";}
 });
 app.get('/index-style.css',function(req,res){
-    res.sendFile(__dirname+"/index-style.css");
+   res.sendFile(__dirname+"/index-style.css");
 });
 app.get('/gamepage-style.css', function(req, res) {
-    res.sendFile(__dirname + "/" + "gamepage-style.css");
-  });
+   res.sendFile(__dirname + "/" + "gamepage-style.css");
+ });
 app.get('/main.js',function(req,res){
-   res.sendFile(__dirname+"/main.js");
+  res.sendFile(__dirname+"/main.js");
 }); 
 app.get('/favicon.ico',function(req,res){
-   res.sendFile(__dirname+"/favicon.ico");
+  res.sendFile(__dirname+"/favicon.ico");
 }); 
 app.get('/background-image2.jpg',function(req,res){
-   res.sendFile(__dirname+"/background-image2.jpg");
+  res.sendFile(__dirname+"/background-image2.jpg");
 });
 app.get('/index.js',function(req,res){
-   res.sendFile(__dirname+"/index.js");
+  res.sendFile(__dirname+"/index.js");
+});
+
+app.get('/login.css',function(req,res){
+  res.sendFile(__dirname+"/login.css");
+});
+app.get('/logo.gif',function(req,res){
+  res.sendFile(__dirname+"/logo.gif");
+});
+app.get('/signup.html',function(req,res){
+  res.sendFile(__dirname+"/signup.html");
+});
+app.get('/signup.css',function(req,res){
+  res.sendFile(__dirname+"/signup.css");
 });
 app.get('/login.html',function(req,res){
    res.sendFile(__dirname+"/login.html");
-});
-app.get('/login.css',function(req,res){
-   res.sendFile(__dirname+"/login.css");
-});
-app.get('/login.gif',function(req,res){
-   res.sendFile(__dirname+"/login.gif");
-});
-app.get('/signup.html',function(req,res){
-   res.sendFile(__dirname+"/signup.html");
-});
-app.get('/signup.css',function(req,res){
-   res.sendFile(__dirname+"/signup.css");
-});
+ });
+ app.get('/logo-gamepage.gif',function(req,res){
+   res.sendFile(__dirname+"/logo-gamepage.gif");
+ }); 
+ app.get('/profile.html',function(req,res){
+   res.sendFile(__dirname+"/profile.html");
+ })
 
 
 users=[];
 broadcastt=[];
 SID=[];
 let myMap1=new Map();
-arr1=['bat','play','chalk','car','table','key','football','knife','boat','stage'];
+arr1=['apple', 'banana', 'car', 'dog', 'elephant', 'fan', 'grape', 'hat', 'ice cream', 'jacket', 'kettle', 'lamp', 'mango', 'notebook', 'orange', 'pencil', 'quilt', 'rabbit', 'spoon', 'table', 'umbrella', 'vase', 'watermelon', 'xylophone', 'yacht', 'zebra', 'ant', 'ball', 'cat', 'duck', 'eagle', 'fish', 'giraffe', 'horse', 'iguana', 'jackal', 'kangaroo', 'lion', 'monkey', 'nest', 'owl', 'parrot', 'quail', 'rat', 'snake', 'tiger', 'unicorn', 'vulture', 'wolf', 'x-ray fish', 'yak', 'zebu', 'airplane', 'boat', 'cycle', 'drum', 'earphone', 'flute', 'guitar', 'harmonica', 'ipad', 'juicer', 'keyboard', 'laptop', 'mobile', 'nail cutter', 'oven', 'piano', 'quiver', 'ruler', 'scissors', 'television', 'utensils', 'violin', 'washing machine', 'xerox machine', 'yoyo', 'zipper', 'alarm clock', 'basket', 'candle', 'diary', 'eraser', 'fork', 'glass', 'hammer', 'ink', 'jug', 'knife', 'lock', 'mirror', 'needle', 'oil can', 'pillow', 'quartz', 'rose', 'soap', 'toothbrush', 'umbrella', 'violin', 'wallet', 'xmas tree', 'yogurt', 'zip'];
 guessed_users=[];
 
 var socket1;
@@ -68,7 +82,11 @@ io.on('connection',function(socket){
    if (index > -1) {
     SID.splice(index, 1);
    }
-   var index1=
+   var index1=users.indexOf(UD);
+
+   if (index1 > -1) {
+      users.splice(index1, 1);
+     }
    socket.broadcast.emit('user-disconnected', {SD:socket.id,usd:UD});
 });
 socket.on('feed-d',function(data){
@@ -86,7 +104,6 @@ socket.on('feed-d',function(data){
     else{
         users.push(data);
         user_n=data;
-        
         socket.emit("setUser",{username:data});
         
     }
@@ -97,9 +114,7 @@ socket.on('feed-d',function(data){
     broadcastt.push(data);
     
    }
-   else{
-      //later use this part
-   } 
+   
     for(let index=0;index<users.length;index++){   
     socket.emit('setLead',users[index])}
     
@@ -114,6 +129,7 @@ socket.on('feed-d',function(data){
  socket.on('setU_C',function(){
    socket.emit('setU_S',SID.length);
  })
+ 
   
 //----------------word given javascript----------//
 socket.on('giveWordC',function(data){
@@ -186,6 +202,31 @@ socket.on('give_scoreC',function(){
    guessed_users.length=0;
 })
 });
+
+app.use(express.urlencoded({extended:false}))
+app.post("/signup", async (req, res) => {
+   const data = {
+     name: req.body.name,
+     password: req.body.password,
+   };
+   await collection.insertMany([data]);
+   res.redirect("/login.html");
+ });
+ 
+ app.post("/login", async (req, res) => {
+   try {
+     const check = await collection.findOne({ name: req.body.name });
+     if (check && check.password == req.body.password) {
+      res.redirect("/profile.html");
+     } else {
+      res.redirect("/login.html");
+     }
+   } catch (error) {
+     res.send("Error in login. Please try again.");
+   }
+ });
+
+
 http.listen(3212,function(){
     console.log("server starts--");
 });
