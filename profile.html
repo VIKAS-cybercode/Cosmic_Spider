@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>
-          Profile
+           authentication
         </title>
         <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
         integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
@@ -43,13 +43,16 @@
             <div class="playerstat">
               <div class="playerdata">
                 <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Username:<div id="profile"></div></h1>
-                <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Total games played:</h1>
-                <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Highest Score</h1>
+                <h1 id="TGP" style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Total games played:</h1>
+                <h1 id="HS" style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Highest Score:</h1>
               </div>
             </div>
             <div class="last3">
-              <div class="playerdata">
+              <div id="playerdata" class="playerdata">
                 <h1 style="font-family: 'Architects Daughter', cursive; font-weight: 500;">Last 3 games:</h1>
+                <div  class="last3gamestat"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="lgp"></span>&nbsp;&nbsp;<span id="lgs"></span></div>
+                <div class="last3gamestat"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="sgp"></span>&nbsp;&nbsp;<span id="sgs"></span></div>
+                <div class="last3gamestat">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="tgp"></span>&nbsp;&nbsp;<span id="tgs"></span></div>
               </div>
             </div>
           </div>
