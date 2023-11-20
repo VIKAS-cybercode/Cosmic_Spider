@@ -154,7 +154,6 @@ socket.on('giveWordC',function(data){
       random_word_sign+="_ ";
    }
    io.to(SID[data.User-1]).emit('giveWordS',random_word);
-   io.to(SID[data.User-1]).emit('givepermissionT');
 
    var socket_t = io.sockets.sockets.get(SID[data.User-1]);
    socket_t.broadcast.emit('giveWordS',random_word_sign);
@@ -217,10 +216,6 @@ socket.on('give_scoreC',function(){
       io.sockets.emit('give_scoreS',g_u);
    }
    guessed_users.length=0;
-})
-socket.on('givepermissionNTA',function(){
-   console.log("yyyuta");
-   io.sockets.emit('givepermissionNT');
 })
 //---------------------------profile page socket work------------------------------------------//
 socket.on('getprofiledata', async function () {
