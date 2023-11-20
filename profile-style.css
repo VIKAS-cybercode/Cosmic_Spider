@@ -17,15 +17,15 @@ body {
     align-items: center;
     justify-content: center;
 }
-/* .logo{
+.logo{
     width: 100%;
 }
 .logo-link{
     width: 30%;
-} */
+}
 .page{
     height: 90%;
-    width: 95%;
+    width: 85%;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -104,4 +104,9 @@ body {
     width: 80%;
     background-color: rgb(0, 157, 255);
     border-radius: 15px;
+}
+.last3gamestat{
+    background-color: white;
+    height:20%;
+    margin-bottom:7px;
 }
