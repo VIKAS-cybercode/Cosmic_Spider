@@ -91,21 +91,6 @@ let start_background_color = "white";
 context.fillStyle = start_background_color;
 context.fillRect(0,0,canvas.width,canvas.height);
 
-var permission=1;
-//socket drawing permission function
-socket.on('givepermissionT',function(){
-    permission=1;
-     turnDraw(); 
-
-})
-socket.on('givepermissionNT',function(){
-    permission=0;
-    console.log("yuta");
-   
-})
-
-if(permission==1){
-
 let draw_color = "black";
 let draw_width = "2";
 let is_drawing = false;
@@ -473,8 +458,6 @@ function redo_last(){
     }
 }
     
-}
-
 //undo and redo function are not working for paths array
 
 
@@ -670,7 +653,6 @@ function game_start(){
                 socket.emit('give_scoreC');
                 checkCompletion(); 
             }, (i - 1) * n * remaining_time * 1000 + (user - 1) * remaining_time * 1000);
-            socket.emit('givepermissionNTA');
         }
     }
 }
