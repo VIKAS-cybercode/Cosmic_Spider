@@ -1,7 +1,7 @@
-        var socket=io();
+var socket=io();
         var user=localStorage.getItem('user-name');
         var guess_word="";
-        /*---------------*/
+        //---------------/
         
         socket.on('connect',function(){
             var user1=user;
@@ -13,7 +13,7 @@
 
 
 
-        /*--------leaderBoard javascript*-----*/
+        /*--------leaderBoard javascript-----*/
         socket.emit('setL',user);
         socket.on('setLead',function(data){
             
@@ -26,38 +26,48 @@
             // Update the HTML as needed
             if (userElement) {
                  document.getElementById(data.usd+'left-player').innerHTML='';
+                 console.log(data.usd);
                  document.getElementById('chat-container').innerHTML+='<div class="chat-player-left" style="color:red;">'+data.usd+' left the game!</div>';
             }
         });
 
 
 
-        /*---------message box javascript*/
+        //---------message box javascript/
         
-        function sendMessage(){
-              
-                var message=document.getElementById('message').value;
-                if(message!=''){
-                    document.getElementById('message').value='';
-                    socket.emit('msg',{message:message,user:user});
+       
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            
+            if (message !== '') {
+                document.getElementById('message').value = '';
+                socket.emit('msg', { message: message, user: user });
+            }
+        }
+        
+        socket.on('newmsg', function (data) {
+            if (user) {
+                if (data.message !== guess_word) {
+                    // Create a new message element
+                    var messageElement = document.createElement('div');
+                    messageElement.style.color = 'black';
+                    messageElement.innerHTML = '<b class="user-message">' + data.user + '</b>: ' + data.message;
+        
+                    // Append the message to the chat container
+                    document.getElementById('chat-container').appendChild(messageElement);
+        
+                    // Scroll to the bottom of the chat container to show the latest message
+                    document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+                } else {
+                    socket.emit('word_guessC', data.user);
                 }
             }
-            socket.on('newmsg',function(data){
-                
-                if(user){
-                    if(data.message!==guess_word){
-                    document.getElementById('chat-container').innerHTML+='\
-                    <div style="color: black;">\
-                       <b class="user-message">'+data.user+'</b>: '+data.message +'\
-                       </div> ';  
-                    }
-                    else{
-                        socket.emit('word_guessC',data.user);
-                    }
-                       
-                }
-                
-            })
+        });
+
+        
+        
+
             socket.on('word_guessS',function(data){
                 document.getElementById('chat-container').innerHTML+='<div style="color:green;"><b>'+data+' guessed the word!</b></div>';
             })
@@ -70,6 +80,8 @@
             });
             
             
+
+
 const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth - 600;
 canvas.height = 530;
@@ -79,7 +91,20 @@ let start_background_color = "white";
 context.fillStyle = start_background_color;
 context.fillRect(0,0,canvas.width,canvas.height);
 
+var permission=1;
+//socket drawing permission function
+socket.on('givepermissionT',function(){
+    permission=1;
+     turnDraw(); 
 
+})
+socket.on('givepermissionNT',function(){
+    permission=0;
+    console.log("yuta");
+   
+})
+
+if(permission==1){
 
 let draw_color = "black";
 let draw_width = "2";
@@ -446,6 +471,7 @@ function redo_last(){
         redo_array.pop();
         context.putImageData(restore_array[index1],0,0);
     }
+}
     
 }
 
@@ -598,7 +624,7 @@ socket.on('ErsS',function(data){
 })
 
 
-//let remaining_time = 30;
+
 let start_time;
 let remaining_time = 30;
 let n = 0; // replace with the number of users
@@ -606,13 +632,17 @@ let timer;
 
 function startTimer() {
     start_time = Date.now();
+    let endSound = new Audio('time_up.mp3');
+    let tickSound = new Audio('tick_tick.mp3');
     return setInterval(function() {
         let elapsed_time = Math.floor((Date.now() - start_time) / 1000);
         remaining_time = 30 - elapsed_time;
         if (remaining_time <= 0) {
             document.getElementById('clock').innerHTML = 'Time\'s up!';
+            endSound.play();
         } else {
             document.getElementById('clock').innerHTML = '<p id="running-time">'+ remaining_time + ' seconds remaining</p>';
+            tickSound.play();
         }
     }, 1000);
 }
@@ -629,7 +659,7 @@ socket.on('setU_S',function(data){
     console.log(n);
     
 })
-
+let completionCounter=0;
 function game_start(){
     socket.emit('setU_C');
     for(let i=1; i<=3; i++){        
@@ -637,11 +667,20 @@ function game_start(){
             setTimeout(function() {
                 socket.emit('giveWordC',{round :i,User:user});
                 socket.emit('socketRoundC',{round:i,User:user}); 
-                socket.emit('give_scoreC'); 
+                socket.emit('give_scoreC');
+                checkCompletion(); 
             }, (i - 1) * n * remaining_time * 1000 + (user - 1) * remaining_time * 1000);
+            socket.emit('givepermissionNTA');
         }
     }
 }
+function checkCompletion() {
+    completionCounter++;
+
+    if (completionCounter === 3 * n) {
+      socket.emit('updateprofile');
+    }
+  }
 
 
 
@@ -662,15 +701,5 @@ socket.on('giveWordS',function(data){
 socket.on('give_scoreS',function(data){
        var value=Number(document.getElementById(data+'S').innerHTML)+5;
        document.getElementById(data+'S').innerHTML=value;
-})    
-
-    
-
-
-
-
-
-
-
-
-        
+       socket.emit("updateScore",{u:data,value:value});
+})
