@@ -52,9 +52,12 @@
                 <canvas id="canvas"></canvas>
                 
                 <div class="tools">
-                    <button onClick="undo_last()" type="button" class="button">Undo</button>
-                    <button onClick="redo_last()" type="button" class="button">Redo</button>
-                    <button onClick="clear_canvas()" type="button" class="button">Clear</button>
+                    <button onClick = "undo_last()" type="button" class="button">
+                            <i class="fa-solid fa-share fa-flip-horizontal fa-lg" style="color: gold;"></i></button>
+                    <button onClick = "redo_last()" type="button" class="button">
+                            <i class="fa-solid fa-share fa-lg" style="color: gold;"></i></button>
+                    <button onClick = "clear_canvas()" type="button" class="button">
+                            <i class="fa-solid fa-trash-can fa-lg" style="color: gold;"></i></button>
 
                     <div onClick="change_shape(this)" class="shape-field" id="rectangle"><i
                             class="fa-sharp fa-solid fa-square fa-lg" style="color: gold;"></i></div>
