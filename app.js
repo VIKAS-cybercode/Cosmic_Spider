@@ -1,9 +1,11 @@
 var app=require("express")();
+var bodyParser = require('body-parser');
 var http=require("http").Server(app);
 var io=require("socket.io")(http);
 const express=require("express");
 app.use(express.json());
 const {collection,profile}=require("./mongodb")
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var user_n="";
 app.get("/",function(req,res){
@@ -63,11 +65,44 @@ app.get('/login.html',function(req,res){
  app.get('/profile-style.css',function(req,res){
    res.sendFile(__dirname+"/profile-style.css");
  })
+ app.get("/image1.jpg",function(req,res){
+   res.sendFile(__dirname+"/image1.jpg");
+ })
+ app.get("/image2.jpg",function(req,res){
+   res.sendFile(__dirname+"/image2.jpg");
+ })
+ app.get("/image3.jpg",function(req,res){
+   res.sendFile(__dirname+"/image3.jpg");
+ })
+ app.get("/image4.jpg",function(req,res){
+   res.sendFile(__dirname+"/image4.jpg");
+ })
+ app.get("/image5.jpg",function(req,res){
+   res.sendFile(__dirname+"/image5.jpg");
+ })
+ app.get("/image6.jpg",function(req,res){
+   res.sendFile(__dirname+"/image6.jpg");
+ })
+ app.get("/image7.jpg",function(req,res){
+   res.sendFile(__dirname+"/image7.jpg");
+ })
+ app.get("/image1.jpg",function(req,res){
+   res.sendFile(__dirname+"/image1.jpg");
+ })
+ app.get("/image8.jpg",function(req,res){
+   res.sendFile(__dirname+"/image8.jpg");
+ })
+ app.get("/image9.jpg",function(req,res){
+   res.sendFile(__dirname+"/image9.jpg");
+ })
+ app.get("/image10.jpg",function(req,res){
+   res.sendFile(__dirname+"/image10.jpg");
+ })
  app.get('/tick_tick.mp3',function(req,res){
-   res.sendFile(_dirname+"/tick_tick.mp3");
+   res.sendFile(__dirname+"/tick_tick.mp3");
  })
  app.get('/time_up.mp3',function(req,res){
-   res.sendFile(_dirname+"/time_up.mp3");
+   res.sendFile(__dirname+"/time_up.mp3");
  })
 
 
@@ -222,14 +257,15 @@ socket.on('getprofiledata', async function () {
    console.log(user_id + "*");
    try {
      const profiled = await profile.findOne({ name: user_id });
+     const imageSrc=profiled.profileimg;
      const lgame=profiled.last3game.lastgame;
      const slgame=profiled.last3game.slastgame;
      const tgame=profiled.last3game.tlastgame;
      const lgp=profiled.last3position.lastposition;
      const sgp=profiled.last3position.slastposition;
      const tgp=profiled.last3position.tlastposition;
-
-     socket.emit('setprofiledata', { name: user_id, GP: profiled.TotalGP, HS: profiled.HighestScore,lgame:lgame,slgame:slgame,tgame:tgame,lgp:lgp,sgp:sgp,tgp:tgp});
+    console.log(imageSrc);
+     socket.emit('setprofiledata', { name: user_id,imageNo:imageSrc, GP: profiled.TotalGP, HS: profiled.HighestScore,lgame:lgame,slgame:slgame,tgame:tgame,lgp:lgp,sgp:sgp,tgp:tgp});
    } catch (error) {
      console.error(error);
    }
@@ -273,6 +309,14 @@ socket.on('updateprofile',async function(data){
       }
    }
 })
+socket.on("changepic",async function(data){
+   console.log(data.user+"***"+data.img);
+await profile.updateOne(
+   {name:data.user},
+   {$set:{'profileimg':Number(data.img)}}
+
+)
+})
 });
 
 app.use(express.urlencoded({extended:false}))
@@ -283,6 +327,7 @@ app.post("/signup", async (req, res) => {
    };
    const profileInitialise={
       name:req.body.name,
+      profileimg:1,
       TotalGP:0,
       HighestScore:0,
       last3game:{
