@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamePage</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Edu+TAS+Beginner:wght@500&family=Merriweather:wght@300&family=Montserrat:wght@100&family=Sacramento&family=Satisfy&display=swap"
+            rel="stylesheet">
+
+    <link rel="stylesheet" href="/CSS/gamepage-style.css">
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <a href="/HTML/index.html" class="logo-link"><img class="logo" src="/media/logo-gamepage.gif" alt=""></a>    
+
+        <div class="top-bar">
+            <div class="board-clock" id="clock"><h1 class="ldb-clock">Clock</h1></div>
+            <div id="clock-icon"><i class="fa-regular fa-clock fa-2xl" style="color: white;"></i></div>
+            <div  id="Word" class="word">
+                <h1 class="ldb">Waiting...</h1>
+            </div>  
+            <div class="start-game" id="new-game">
+                <button type="button" id="GameSt" class="btn btn-dark btn1" onclick="game_start()"><b>Start
+                    Game</b></button>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <div id="leaderBoard" class="leaderboard"> 
+                <h1 class="ldb1"><b>Leaderboard</b></h1>
+                <hr class="h-line1">
+            </div>
+
+            <div class="draw-board">
+                <canvas id="canvas"></canvas>
+                
+                <div class="tools">
+                    <button onClick="undo_last()" type="button" class="button">Undo</button>
+                    <button onClick="redo_last()" type="button" class="button">Redo</button>
+                    <button onClick="clear_canvas()" type="button" class="button">Clear</button>
+
+                    <div onClick="change_shape(this)" class="shape-field" id="rectangle"><i
+                            class="fa-sharp fa-solid fa-square fa-lg" style="color: gold;"></i></div>
+                    <div onClick="change_shape(this)" class="shape-field" id="triangle"><i
+                            class="fa-solid fa-caret-up fa-2xl" style="color: gold;"></i></div>
+                    <div onClick="change_shape(this)" class="shape-field" id="circle"><i
+                            class="fa-solid fa-circle fa-lg" style="color: gold;"></i></div>
+                    <div onClick="change_shape(this)" class="shape-field" id="line"><i
+                            class="fa-sharp fa-solid fa-lines-leaning fa-lg" style="color: gold;"></i></div>
+                    <div onClick="change_shape(this)" class="shape-field" id="pencil"><i
+                            class="fa-solid fa-pencil fa-lg" style="color: gold;"></i></div>
+                    <div onClick="change_shape(this)" class="shape-field" id="fill"><i
+                            class="fa-solid fa-fill-drip fa-lg" style="color: gold;"></i></div>
+
+                    <input onInput="draw_color = this.value" type="color" class="color-picker">
+                    <input onInput="draw_width = this.value" type="range" min="1" max="100" class="pen-range" value="2">
+
+                    <div onclick="save_img(this)" class="shape-field" id="save"><i class="fa-solid fa-download fa-lg" style="color: gold;"></i></div>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="chat-div" id="round-number"><p>Round Number:</p></div>
+                <hr class="h-line1">
+                <h1 class="ldb2"><b>Chat</b></h1>
+                <div class="chat-div" id="chat-box">
+                    <input type="text" id="message" class="chat-text" placeholder="Guess here"> <button type="button" id="sent" class="btn btn-dark"
+                        onclick="sendMessage()">Send</button>
+                </div>
+                <hr class="h-line">
+                <div class="chat-div" id="chat-container"></div>
+            </div>
+
+        </div>
+    </div>
+    <script src="/JavaScript/main.js"></script>
+
+</body>
+
+</html>
