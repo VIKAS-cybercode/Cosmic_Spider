@@ -1,0 +1,181 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,body{
+    width: 100vw;
+    height:100vh;   
+}
+body {
+    background-image: url('/media/background-image2.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+h1{
+    color: white;
+    font-family: 'Architects Daughter', cursive; 
+    font-weight: 500;
+}
+.head-col1{
+    color: black;
+    font-family: 'Architects Daughter', cursive; 
+    font-weight: 600;
+}
+.logo{
+    width: 100%;
+}
+.logo-link{
+    width: 30%;
+}
+.page{
+    height: 90%;
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.wrapper{
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;  
+    border-radius: 10px;
+}
+.col1{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    border-radius: 10px;
+}
+.profile-img{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height:35%;
+    width: 80%;
+    background-color: gold;
+    border-radius: 15px;
+}
+.profile-image{
+    width: 80%;
+    height: 100%;
+    border-radius: 50%;
+}
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+    background-color: white;
+  }
+  
+  
+  /* The button used to open the popup form */
+  .open-button {
+    color: white;
+    
+    cursor: pointer;
+  }
+  .popup-text{
+    color: black;
+    font-family: 'Architects Daughter', cursive; 
+    font-weight: 600;
+  }
+  
+  /* The container for the profile images */
+  .profile-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  /* The individual profile images */
+  .profile-image {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    cursor: pointer;
+  }
+
+.friends{
+    height: 55%;
+    width: 80%;
+    background-color: gold;
+    border-radius: 15px;
+    text-align: center;
+}
+.col2{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    border-radius: 10px;
+}
+.playerstat{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 45%;
+    width: 80%;
+    background-color: rgb(0, 157, 255);
+    border-radius: 15px;
+}
+.one,.two,.three{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    text-align: center;
+    font-size: xx-large;
+    font-family: 'Architects Daughter', cursive; 
+    font-weight: 600;
+    
+}
+#profile,#TGP,#HS{
+    background-color: gold;
+    color: rgb(0, 157, 255);
+    border-radius: 5px;
+    width: 30%;
+}
+.playerdata{
+    width: 85%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.last3{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 45%;
+    width: 80%;
+    background-color: rgb(0, 157, 255);
+    border-radius: 15px;
+}
+.last3gamestat{
+    background-color: white;
+    height:20%;
+    margin-bottom:7px;
+}
