@@ -55,6 +55,11 @@ const profileSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    profileimg:{
+        type:Number,
+        required:true
+
+    },
     TotalGP:{
         type:Number,
         required:true
