@@ -26,6 +26,11 @@
 </head>
 
 <body>
+    <audio id="myAudio" loop>
+        <source src="audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+
     <div class="wrapper">
         <a href="/HTML/index.html" class="logo-link"><img class="logo" src="/media/logo-gamepage.gif" alt=""></a>    
 
@@ -34,6 +39,9 @@
             <div id="clock-icon"><i class="fa-regular fa-clock fa-2xl" style="color: white;"></i></div>
             <div  id="Word" class="word">
                 <h1 class="ldb">Waiting...</h1>
+                <div class="audio-icon" onclick="toggleAudio()">
+                    <i id="audioIcon" class="fa-solid fa-volume-xmark fa-xl" style="color: #ffd700;"></i>
+                </div>
             </div>  
             <div class="start-game" id="new-game">
                 <button type="button" id="GameSt" class="btn btn-dark btn1" onclick="game_start()"><b>Start
@@ -52,9 +60,12 @@
                 <canvas id="canvas"></canvas>
                 
                 <div class="tools">
-                    <button onClick="undo_last()" type="button" class="button">Undo</button>
-                    <button onClick="redo_last()" type="button" class="button">Redo</button>
-                    <button onClick="clear_canvas()" type="button" class="button">Clear</button>
+                    <button onClick = "undo_last()" type="button" class="button">
+                        <i class="fa-solid fa-share fa-flip-horizontal fa-lg" style="color: gold;"></i></button>
+                <button onClick = "redo_last()" type="button" class="button">
+                        <i class="fa-solid fa-share fa-lg" style="color: gold;"></i></button>
+                <button onClick = "clear_canvas()" type="button" class="button">
+                        <i class="fa-solid fa-trash-can fa-lg" style="color: gold;"></i></button>
 
                     <div onClick="change_shape(this)" class="shape-field" id="rectangle"><i
                             class="fa-sharp fa-solid fa-square fa-lg" style="color: gold;"></i></div>
@@ -90,6 +101,7 @@
 
         </div>
     </div>
+
     <script src="/JavaScript/main.js"></script>
 
 </body>
