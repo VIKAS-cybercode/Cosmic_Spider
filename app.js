@@ -1,7 +1,9 @@
 var app=require("express")();
 var bodyParser = require('body-parser');
 var http=require("http").Server(app);
-var io=require("socket.io")(http);
+const io = require('socket.io')(http, {
+  maxHttpBufferSize: 1e50 // more than 200MB
+});
 const express=require("express");
 
 const session = require('express-session');
@@ -119,10 +121,29 @@ app.get('/HTML/login.html',function(req,res){
  app.get('/Curser/rectangle.svg',function(req,res){
    res.sendFile(__dirname+"/Curser/rectangle.svg");
  })
+ app.get('/Curser/triangle.svg',function(req,res){
+  res.sendFile(__dirname+"/Curser/triangle.svg");
+})
+app.get('/Curser/circle.svg',function(req,res){
+  res.sendFile(__dirname+"/Curser/circle.svg");
+})
+app.get('/Curser/line.svg',function(req,res){
+  res.sendFile(__dirname+"/Curser/line.svg");
+})
+app.get('/Curser/fill.svg',function(req,res){
+  res.sendFile(__dirname+"/Curser/fill.svg");
+})
+app.get('/Curser/eraser-solid.svg',function(req,res){
+  res.sendFile(__dirname+"/Curser/eraser-solid.svg");
+})
 
  app.get('/HTML/audio.mp3',function(req,res){
    res.sendFile(__dirname+"/HTML/audio.mp3");
  })
+ app.get('/HTML/gmail.svg',function(req,res){
+  res.sendFile(__dirname+"/HTML/gmail.svg");
+})
+
  app.get('/getProfileData', (req, res) => {
    if (req.session.user) {
      res.json(req.session.user); // Send user data to client
@@ -285,6 +306,41 @@ socket.on('give_scoreC',function(){
       io.sockets.emit('give_scoreS',g_u);
    }
    guessed_users.length=0;
+})
+
+//shapes-projection///
+socket.on("drawLineS",function(data){
+  socket.broadcast.emit("drawLineC",data);
+})
+socket.on("lineExS",function(data){
+  socket.broadcast.emit("lineExC",data);
+})
+socket.on("drawRectS",function(data){
+  socket.broadcast.emit("drawRectC",data);
+})
+socket.on("RectExS",function(data){
+  socket.broadcast.emit("RectExC",data);
+})
+socket.on("drawCircleS",function(data){
+  socket.broadcast.emit("drawCircleC",data);
+})
+socket.on("CircleExS",function(data){
+  socket.broadcast.emit("CircleExC",data);
+})
+socket.on("drawTriangleS",function(data){
+  socket.broadcast.emit("drawTriangleC",data);
+})
+socket.on("TriangleExS",function(data){
+  socket.broadcast.emit("TriangleExC",data);
+})
+
+//undo -redo new function 
+socket.on("UndoC",function(data){
+  socket.broadcast.emit("UndoS",data);
+})
+
+socket.on("RedoC",function(data){
+  socket.broadcast.emit("RedoS",data);
 })
 //---------------------------profile page socket work------------------------------------------//
 
