@@ -3,9 +3,18 @@ var bodyParser = require('body-parser');
 var http=require("http").Server(app);
 var io=require("socket.io")(http);
 const express=require("express");
+
+const session = require('express-session');
 app.use(express.json());
 const {collection,profile}=require("./mongodb")
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(session({
+  secret: 'mySuperSecretKey',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } 
+}));
 
 var user_n="";
 app.get("/",function(req,res){
@@ -111,6 +120,24 @@ app.get('/HTML/login.html',function(req,res){
    res.sendFile(__dirname+"/Curser/rectangle.svg");
  })
 
+ app.get('/HTML/audio.mp3',function(req,res){
+   res.sendFile(__dirname+"/HTML/audio.mp3");
+ })
+ app.get('/getProfileData', (req, res) => {
+   if (req.session.user) {
+     res.json(req.session.user); // Send user data to client
+   } else {
+     res.status(401).send('Not logged in');
+   }
+ });
+
+ app.put('/update', async (req, res) => {
+  await profile.updateOne(
+    { name: req.body.name },
+    { $set: { 'profileimg': Number(req.body.value) } }
+  );
+  console.log("updated");
+});
 
 
 
@@ -119,7 +146,7 @@ broadcastt=[];
 SID=[];
 let myMap1=new Map();
 let myMap2=new Map();
-arr1=['apple', 'banana', 'car', 'dog', 'elephant', 'fan', 'grape', 'hat', 'ice cream', 'jacket', 'kettle', 'lamp', 'mango', 'notebook', 'orange', 'pencil', 'quilt', 'rabbit', 'spoon', 'table', 'umbrella', 'vase', 'watermelon', 'xylophone', 'yacht', 'zebra', 'ant', 'ball', 'cat', 'duck', 'eagle', 'fish', 'giraffe', 'horse', 'iguana', 'jackal', 'kangaroo', 'lion', 'monkey', 'nest', 'owl', 'parrot', 'quail', 'rat', 'snake', 'tiger', 'unicorn', 'vulture', 'wolf', 'x-ray fish', 'yak', 'zebu', 'airplane', 'boat', 'cycle', 'drum', 'earphone', 'flute', 'guitar', 'harmonica', 'ipad', 'juicer', 'keyboard', 'laptop', 'mobile', 'nail cutter', 'oven', 'piano', 'quiver', 'ruler', 'scissors', 'television', 'utensils', 'violin', 'washing machine', 'xerox machine', 'yoyo', 'zipper', 'alarm clock', 'basket', 'candle', 'diary', 'eraser', 'fork', 'glass', 'hammer', 'ink', 'jug', 'knife', 'lock', 'mirror', 'needle', 'oil can', 'pillow', 'quartz', 'rose', 'soap', 'toothbrush', 'umbrella', 'violin', 'wallet', 'xmas tree', 'yogurt', 'zip'];
+arr1=['apple', 'banana', 'car', 'dog', 'elephant', 'fan', 'grape', 'hat', 'ice cream', 'jacket', 'kettle', 'lamp', 'mango', 'notebook', 'orange', 'pencil', 'rabbit', 'spoon', 'table', 'umbrella', 'vase', 'watermelon', 'xylophone', 'yacht', 'zebra', 'ant', 'ball', 'cat', 'duck', 'eagle', 'fish', 'giraffe', 'horse', 'iguana', 'jackal', 'kangaroo', 'lion', 'monkey', 'nest', 'owl', 'parrot', 'quail', 'rat', 'snake', 'tiger', 'unicorn', 'vulture', 'wolf', 'x-ray fish', 'yak', 'zebu', 'airplane', 'boat', 'cycle', 'drum', 'earphone', 'flute', 'guitar', 'harmonica', 'ipad', 'juicer', 'keyboard', 'laptop', 'mobile', 'nail cutter', 'oven', 'piano', 'quiver', 'ruler', 'scissors', 'television', 'utensils', 'violin', 'washing machine', 'xerox machine', 'yoyo', 'zipper', 'alarm clock', 'basket', 'candle', 'diary', 'eraser', 'fork', 'glass', 'hammer', 'ink', 'jug', 'knife', 'lock', 'mirror', 'needle', 'oil can', 'pillow', 'quartz', 'rose', 'soap', 'toothbrush', 'umbrella', 'violin', 'wallet', 'xmas tree', 'yogurt', 'zip'];
 guessed_users=[];
 var user_id;
 
@@ -260,23 +287,7 @@ socket.on('give_scoreC',function(){
    guessed_users.length=0;
 })
 //---------------------------profile page socket work------------------------------------------//
-socket.on('getprofiledata', async function () {
-   console.log(user_id + "*");
-   try {
-     const profiled = await profile.findOne({ name: user_id });
-     const imageSrc=profiled.profileimg;
-     const lgame=profiled.last3game.lastgame;
-     const slgame=profiled.last3game.slastgame;
-     const tgame=profiled.last3game.tlastgame;
-     const lgp=profiled.last3position.lastposition;
-     const sgp=profiled.last3position.slastposition;
-     const tgp=profiled.last3position.tlastposition;
-    console.log(imageSrc);
-     socket.emit('setprofiledata', { name: user_id,imageNo:imageSrc, GP: profiled.TotalGP, HS: profiled.HighestScore,lgame:lgame,slgame:slgame,tgame:tgame,lgp:lgp,sgp:sgp,tgp:tgp});
-   } catch (error) {
-     console.error(error);
-   }
- });
+
 //---------------------------profile page data updation--------------------------//
 socket.on('updateScore',function(data){
    myMap2.set(data.u,data.value);
@@ -316,14 +327,6 @@ socket.on('updateprofile',async function(data){
       }
    }
 })
-socket.on("changepic",async function(data){
-   console.log(data.user+"*"+data.img);
-await profile.updateOne(
-   {name:data.user},
-   {$set:{'profileimg':Number(data.img)}}
-
-)
-})
 });
 
 app.use(express.urlencoded({extended:false}))
@@ -358,7 +361,8 @@ app.post("/signup", async (req, res) => {
    try {
      const check = await collection.findOne({ name: req.body.name });
      if (check && check.password == req.body.password) {
-     user_id=req.body.name;
+      const user=await profile.findOne({name:req.body.name});
+      req.session.user =user; // Save user data in session
       res.redirect("/HTML/profile.html");
      } else {
       res.redirect("/HTML/login.html");
