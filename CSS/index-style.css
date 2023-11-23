@@ -9,6 +9,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
+    font-family: 'Architects Daughter', cursive;
   }   
 .web-gif{
     display:inline-block;
@@ -40,9 +41,14 @@ body {
     width: 100%;
     margin-bottom: 10px;
 }
-.btn-success{
-    background-color: #7D7C7C !important;
-    border-color: #7D7C7C !important;
+.pag-button{
+    background-color: gold !important;
+    border-color: white !important;
+    color: rgb(0, 157, 255);
+}
+.login-button{
+    background-color: rgb(0, 157, 255) !important;
+    border-color: white !important;
 }
 h2{
     color: white;
@@ -72,7 +78,7 @@ canvas{
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    /* gap: 20px; */
 }
 .home-top{
     height: 20%;
@@ -89,19 +95,119 @@ canvas{
 .container{
     pointer-events: auto;
 }
-/* .home-footer{
-    background-color: white;
-    border: 2px solid white;
+.home-footer{
+    pointer-events: auto;
+}
+.home-footer{
+    /* background-color: white; */
+    /* border: 2px solid white; */
     border-radius: 5px;
     height: 10%;
     width: 100%;
     margin: auto;
-    padding: 10px;
+    padding-bottom: 50px;
     text-align: center;
 }
 .footer-link{
     text-decoration: none;
-    color: black;
-    font-size: 20px;
-} */
+    color: white;
+    font-size: 30px;
+}
 
+.pop-up {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    /* border-radius: 50px; */
+}
+
+/* Pop-up Content/Box */
+.pop-up-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    height: 80%;
+    border-radius: 20px;
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: gold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* The div inside the pop-up */
+.inner-div {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 157, 255);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.pop-up-top{
+    width: 100%;
+}
+.about-us{
+    /* background-color: aquamarine; */
+    width: 95%;
+    height: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.data{
+    background-color: gold;
+    width: 30%;
+    height: 70%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: black;
+    text-align: left;
+}
+.data-text{
+    color: black;
+}
+.data-text1{
+    color: rgb(0, 157, 255);
+    font-weight: 600;
+}
+.links{
+    display: flex;
+    flex-direction: row;
+    height: 10%;
+    gap: 20px;
+}
+.gmail-icon{
+    position:relative;
+    /* top: -12px; */
+}
+.pop-head{
+    font-size: 38px;
+}
