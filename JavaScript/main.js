@@ -77,16 +77,27 @@ textBox.addEventListener("keyup",function(event){
 });
             
             
+document.getElementById("d_canvas").style.display = "block";
+document.getElementById("g_canvas").style.display = "none";
 
+const d_canvas = document.getElementById("d_canvas");
+d_canvas.width = window.innerWidth - 600;
+d_canvas.height = 530;
 
-const canvas = document.getElementById("canvas");
-canvas.width = window.innerWidth - 600;
-canvas.height = 530;
-
-let context = canvas.getContext("2d");
+let d_context = d_canvas.getContext("2d");
 let start_background_color = "white";
-context.fillStyle = start_background_color;
-context.fillRect(0,0,canvas.width,canvas.height);
+d_context.fillStyle = start_background_color;
+d_context.fillRect(0,0,d_canvas.width,d_canvas.height);
+
+const g_canvas = document.getElementById("g_canvas");
+
+g_canvas.width = window.innerWidth - 600;
+g_canvas.height = 530;
+
+let g_context = g_canvas.getContext("2d");
+g_context.fillStyle = start_background_color;
+g_context.fillRect(0,0,g_canvas.width,g_canvas.height);
+
 
 //variables
 let draw_color = "black";
@@ -96,7 +107,8 @@ let snapshot;
 
 // for undo feature
 let restore_array = [];
-let index1 = -1;
+restore_array.push(d_context.getImageData(0,0,d_canvas.width,d_canvas.height));
+let index1 = 0;
 
 //for redo feature
 let redo_array = [];
@@ -108,51 +120,65 @@ let paths_r = [];
 
 let draw_shape = "pencil";
 
-let current_curser="/Curser/pencil.svg";
-canvas.style.cursor = 'url(' + current_curser + ') 4 100, auto';
+// let current_curser="/Curser/pencil.svg";
+d_canvas.style.cursor = 'url(/Curser/pencil.svg) 4 100, auto';
+
+document.getElementById("pencil").classList.add("selected");
 
 //Change_shape Function
 function change_shape(element){
-    current_curser="/Curser/" + element.id + ".svg";
-    canvas.style.cursor = 'url(' + current_curser + '), auto';
     draw_shape = element.id;
-    socket.emit("change_shapeC",draw_shape);
-}
-
-
-
-//to hover the selected shape
-document.getElementById("pencil").classList.add("selected");
-function change_shape(element){
-    draw_shape = element.id;
+    //to hover the selected shape
     let selected_item = document.getElementById(draw_shape);
     let other_items = document.getElementsByClassName("shape-field");
     for(let i = 0; i < other_items.length; i++){
         other_items[i].classList.remove("selected");
     }
     selected_item.classList.add("selected");
+
+    //Changing Curser
+    if(draw_shape==="pencil"){
+        d_canvas.style.cursor = 'url(/Curser/' + draw_shape  + '.svg) 4 100, auto';
+    }
+    else if(draw_shape==="line"){
+        d_canvas.style.cursor = 'url(/Curser/' + draw_shape  + '.svg) 14 14, auto';
+    }
+    else if(draw_shape==="circle"){
+        d_canvas.style.cursor = 'url(/Curser/' + draw_shape  + '.svg) 4 4, auto';
+    }
+    else if(draw_shape==="triangle"){
+        d_canvas.style.cursor = 'url(/Curser/' + draw_shape  + '.svg) 4 4, auto';
+    }
+    else if(draw_shape==="rectangle"){
+        d_canvas.style.cursor = 'url(/Curser/' + draw_shape  + '.svg) 2 2, auto';
+    }
+    else{
+        d_canvas.style.cursor = 'url(/Curser/' + draw_shape  + '.svg) 4 4, auto';
+    }
+    
+    socket.emit("change_shapeC",draw_shape);
 }
 
 
-canvas.addEventListener("touchstart",start,false);
-canvas.addEventListener("touchmove",draw,false);
-canvas.addEventListener("mousedown",start,false);
-canvas.addEventListener("mousemove",draw,false);
+d_canvas.addEventListener("touchstart",start,false);
+d_canvas.addEventListener("touchmove",draw,false);
+d_canvas.addEventListener("mousedown",start,false);
+d_canvas.addEventListener("mousemove",draw,false);
 
 
-canvas.addEventListener("touchend",stop,false);
-canvas.addEventListener("mouseup",stop,false);
-canvas.addEventListener("mouseout",stop,false);
+d_canvas.addEventListener("touchend",stop,false);
+d_canvas.addEventListener("mouseup",stop,false);
+d_canvas.addEventListener("mouseout",stop,false);
 
 
 //to stop the default funtion of right click
-canvas.addEventListener('contextmenu', function(e) {
+d_canvas.addEventListener('contextmenu', function(e) {
     e.preventDefault();
 }, false);
 
 
 //use wheel to change width
-canvas.addEventListener('wheel', function(e) {
+d_canvas.addEventListener('wheel', function(e) {
     if(e.deltaY < 0)
         draw_width += 2;
     else
@@ -179,53 +205,83 @@ let temp_draw_width = "";
 
 //Line--
 const drawLine =(event) =>{   
-    context.beginPath(); 
-    context.strokeStyle = draw_color;
-    context.lineWidth = draw_width;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.moveTo(mousedown_x, mousedown_y); 
-    context.lineTo(event.offsetX, event.offsetY); 
-    context.closePath();
-    context.stroke(); 
+    d_context.beginPath(); 
+    d_context.strokeStyle = draw_color;
+    d_context.lineWidth = draw_width;
+    d_context.lineCap = "round";
+    d_context.lineJoin = "round";
+    d_context.moveTo(mousedown_x, mousedown_y); 
+    d_context.lineTo(event.offsetX, event.offsetY); 
+    d_context.closePath();
+    d_context.stroke(); 
+    var strstyl=d_context.strokeStyle;
+    var lw=d_context.lineWidth;
+    var mdx=mousedown_x;
+    var mdy=mousedown_y;
+    var eox=event.offsetX;
+    var eoy=event.offsetY;
+    socket.emit("drawLineS",{strstyl:strstyl,lw:lw,mdx:mdx,mdy:mdy,eox:eox,eoy:eoy});
+
    
 }
 // Rectangle--
 const drawRect = (event) => {
-    context.beginPath();
-    context.strokeStyle = draw_color;
-    context.lineWidth = draw_width;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.rect(event.offsetX, event.offsetY, mousedown_x - event.offsetX, mousedown_y - event.offsetY); 
-    context.closePath();
-    context.stroke();
+    d_context.beginPath();
+    d_context.strokeStyle = draw_color;
+    d_context.lineWidth = draw_width;
+    d_context.lineCap = "round";
+    d_context.lineJoin = "round";
+    d_context.rect(event.offsetX, event.offsetY, mousedown_x - event.offsetX, mousedown_y - event.offsetY); 
+    d_context.closePath();
+    d_context.stroke();
+    var strstyl=d_context.strokeStyle;
+    var lw=d_context.lineWidth;
+    var mdx=mousedown_x;
+    var mdy=mousedown_y;
+    var eox=event.offsetX;
+    var eoy=event.offsetY;
+    socket.emit("drawRectS",{strstyl:strstyl,lw:lw,mdx:mdx,mdy:mdy,eox:eox,eoy:eoy});
 }
 // Circle--
 const drawCircle = (event) => {
-    context.beginPath();
+    d_context.beginPath();
     let radius = Math.sqrt(Math.pow((mousedown_x - event.offsetX), 2) + Math.pow((mousedown_y - event.offsetY), 2));
-    context.arc(mousedown_x, mousedown_y, radius, 0, 2 * Math.PI); 
-    context.strokeStyle = draw_color;
-    context.lineWidth = draw_width;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.stroke();
-    context.closePath();
+    d_context.arc(mousedown_x, mousedown_y, radius, 0, 2 * Math.PI); 
+    d_context.strokeStyle = draw_color;
+    d_context.lineWidth = draw_width;
+    d_context.lineCap = "round";
+    d_context.lineJoin = "round";
+    d_context.stroke();
+    d_context.closePath();
+    var strstyl=d_context.strokeStyle;
+    var lw=d_context.lineWidth;
+    var mdx=mousedown_x;
+    var mdy=mousedown_y;
+    socket.emit("drawCircleS",{strstyl:strstyl,lw:lw,mdx:mdx,mdy:mdy,radius:radius});
+
 }
 //Triangle--
 const drawTriangle = (event) => {
-    context.beginPath();
-    context.strokeStyle = draw_color;
-    context.lineWidth = draw_width;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.moveTo(mousedown_x, mousedown_y); 
-    context.lineTo(event.offsetX, event.offsetY); 
-    context.lineTo(mousedown_x * 2 - event.offsetX, event.offsetY); 
-    context.closePath(); 
-    context.stroke(); 
+    d_context.beginPath();
+    d_context.strokeStyle = draw_color;
+    d_context.lineWidth = draw_width;
+    d_context.lineCap = "round";
+    d_context.lineJoin = "round";
+    d_context.moveTo(mousedown_x, mousedown_y); 
+    d_context.lineTo(event.offsetX, event.offsetY); 
+    d_context.lineTo(mousedown_x * 2 - event.offsetX, event.offsetY); 
+    d_context.closePath(); 
+    d_context.stroke(); 
+    var strstyl=d_context.strokeStyle;
+    var lw=d_context.lineWidth;
+    var mdx=mousedown_x;
+    var mdy=mousedown_y;
+    var eox=event.offsetX;
+    var eoy=event.offsetY;
+    socket.emit("drawTriangleS",{strstyl:strstyl,lw:lw,mdx:mdx,mdy:mdy,eox:eox,eoy:eoy});
 }
+
+
 
 function start(event){
     //for eraser
@@ -236,45 +292,47 @@ function start(event){
         draw_color = "white";
         draw_shape = "pencil";
         draw_width = 15;
-        canvas.style.cursor = 'url(/Curser/rectangle.svg) 10 10, auto';
+        d_canvas.style.cursor = 'url(/Curser/eraser-solid.svg) 10 20, pointer';
         socket.emit('button2C');
     }
     //coordinates of mousedown
-    mousedown_x = event.clientX - canvas.getBoundingClientRect().left;
-    mousedown_y = event.clientY - canvas.getBoundingClientRect().top;
+    mousedown_x = event.clientX - d_canvas.getBoundingClientRect().left;
+    mousedown_y = event.clientY - d_canvas.getBoundingClientRect().top;
     
     //to fill color
     if(draw_shape=="fill"){
         let insidePath = false;
-
+        // floodFill(mousedown_x,mousedown_y,draw_color);
+        
         for (let path of paths) {
-            if (context.isPointInPath(path, mousedown_x, mousedown_y)) {
+            if (d_context.isPointInPath(path, mousedown_x, mousedown_y)) {
                 // Set the fill color and fill the path
-                context.fillStyle = draw_color;
-                context.fill(path);
+                d_context.fillStyle = draw_color;
+                d_context.fill(path);
                 insidePath = true;
                 var p=path;
-                socket.emit('fillC1',{Path:p,FillStyle:context.fillStyle});
+                socket.emit('fillC1',{Pth:p,FillStyle:draw_color});
                 break;
             }
+            
         }
 
         if (!insidePath) {
-            context.fillStyle = draw_color;
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            socket.emit('fillC2',context.fillStyle);
+            d_context.fillStyle = draw_color;
+            d_context.fillRect(0, 0, d_canvas.width, d_canvas.height);
+            socket.emit('fillC2',d_context.fillStyle);
         }
 
     }
     else{
         is_drawing = true;
-        context.beginPath();
-        context.moveTo(event.clientX - canvas.getBoundingClientRect().left,
-                        event.clientY - canvas.getBoundingClientRect().top);
-        var MoveX=event.clientX - canvas.getBoundingClientRect().left;
-        var MoveY=event.clientY - canvas.getBoundingClientRect().top;              
+        d_context.beginPath();
+        d_context.moveTo(event.clientX - d_canvas.getBoundingClientRect().left,
+                        event.clientY - d_canvas.getBoundingClientRect().top);
+        var MoveX=event.clientX - d_canvas.getBoundingClientRect().left;
+        var MoveY=event.clientY - d_canvas.getBoundingClientRect().top;              
         socket.emit('fillC3',{mX:MoveX,mY:MoveY});                
-        snapshot = context.getImageData(0, 0, canvas.width, canvas.height);
+        snapshot = d_context.getImageData(0, 0, d_canvas.width, d_canvas.height);
     }   
     
     event.preventDefault();
@@ -284,36 +342,60 @@ function draw(event){
     if(!is_drawing) return;
 
     //coordinates of mousemove
-    mousemove_x = event.clientX - canvas.getBoundingClientRect().left;
-    mousemove_y = event.clientY - canvas.getBoundingClientRect().top;
+    mousemove_x = event.clientX - d_canvas.getBoundingClientRect().left;
+    mousemove_y = event.clientY - d_canvas.getBoundingClientRect().top;
 
     // for pencil
     if(draw_shape == "pencil"){
-        context.lineTo(mousemove_x,mousemove_y);
-        context.strokeStyle = draw_color;
-        context.lineWidth = draw_width;
-        context.lineCap = "round";
-        context.lineJoin = "round";
-        context.stroke();
-        var MoveX=mousemove_x;//change
+        d_context.lineTo(mousemove_x,mousemove_y);
+        d_context.strokeStyle = draw_color;
+        d_context.lineWidth = draw_width;
+        d_context.lineCap = "round";
+        d_context.lineJoin = "round";
+        d_context.stroke();
+        var MoveX=mousemove_x;
         var MoveY=mousemove_y;
-        socket.emit('drawC',{mX:MoveX,mY:MoveY,StrSyl:context.strokeStyle,LW:context.lineWidth});
+        socket.emit('drawC',{mX:MoveX,mY:MoveY,StrSyl:d_context.strokeStyle,LW:d_context.lineWidth});
     }
 
     else if(draw_shape == "line"){
-        context.putImageData(snapshot, 0, 0);
+        let s = {
+            data: Array.from(snapshot.data),
+            width: snapshot.width,
+            height: snapshot.height
+        };
+        d_context.putImageData(snapshot, 0, 0);
+        socket.emit("lineExS",s);
         drawLine(event);
     }
     else if(draw_shape == "rectangle"){
-        context.putImageData(snapshot, 0, 0);
+        let s = {
+            data: Array.from(snapshot.data),
+            width: snapshot.width,
+            height: snapshot.height
+        };
+        d_context.putImageData(snapshot, 0, 0);
+        socket.emit("RectExS",s);
         drawRect(event);
     }
     else if(draw_shape == "circle"){
-        context.putImageData(snapshot, 0, 0);
+        let s = {
+            data: Array.from(snapshot.data),
+            width: snapshot.width,
+            height: snapshot.height
+        };
+        d_context.putImageData(snapshot, 0, 0);
+        socket.emit("CircleExS",s);
         drawCircle(event);
     }
     else if(draw_shape == "triangle"){
-        context.putImageData(snapshot, 0, 0);
+        let s = {
+            data: Array.from(snapshot.data),
+            width: snapshot.width,
+            height: snapshot.height
+        };
+        d_context.putImageData(snapshot, 0, 0);
+        socket.emit("TriangleExS",s);
         drawTriangle(event);
     }
 
@@ -323,13 +405,13 @@ function draw(event){
 function stop(event){
     
     //coordinates of mouseup
-    let mouseup_x = event.clientX - canvas.getBoundingClientRect().left;
-    let mouseup_y = event.clientY - canvas.getBoundingClientRect().top;
+    let mouseup_x = event.clientX - d_canvas.getBoundingClientRect().left;
+    let mouseup_y = event.clientY - d_canvas.getBoundingClientRect().top;
     
     //pencil
     if(is_drawing && draw_shape == "pencil"){
-        context.stroke();
-        context.closePath();
+        d_context.stroke();
+        d_context.closePath();
         let path = new Path2D();
         path.moveTo(mousedown_x, mousedown_y);
         path.lineTo(mouseup_x, mouseup_y);
@@ -354,9 +436,8 @@ function stop(event){
         var muy=mouseup_y;
         var mdx=mousedown_x;
         var mdy=mousedown_y;
-        var lnw=context.lineWidth;
         var p=path;
-        socket.emit('stopC2',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,LW:lnw,Path:p,StrSyl:context.strokeStyle});
+        socket.emit('stopC2',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,Path:p});
 
     }
     //Rectangle
@@ -369,9 +450,8 @@ function stop(event){
         var muy=mouseup_y;
         var mdx=mousedown_x;
         var mdy=mousedown_y;
-        var lnw=context.lineWidth;
         var p=path;
-        socket.emit('stopC3',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,LW:lnw,Path:p,StrSyl:context.strokeStyle});
+        socket.emit('stopC3',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,Path:p});
         
     }
     //circle
@@ -380,14 +460,14 @@ function stop(event){
         let radius = Math.sqrt(Math.pow((mousedown_x - mouseup_x), 2) + Math.pow((mousedown_y - mouseup_y), 2));
         path.arc(mousedown_x, mousedown_y, radius, 0, 2 * Math.PI);
         paths.push(path);
-        var mux=mouseup_x;
-        var muy=mouseup_y;
+        is_drawing = false;
+        var p=path;
+        var r=radius;
         var mdx=mousedown_x;
         var mdy=mousedown_y;
-        var lnw=context.lineWidth;
-        var p=path;
-        socket.emit('stopC4',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,LW:lnw,Path:p,StrSyl:context.strokeStyle});
-        is_drawing = false;   
+          
+        socket.emit('stopC4',{Path:p,radius:r,MDX:mdx,MDY:mdy});
+          
     }
 
     //Triangle
@@ -403,9 +483,8 @@ function stop(event){
         var muy=mouseup_y;
         var mdx=mousedown_x;
         var mdy=mousedown_y;
-        var lnw=context.lineWidth;
         var p=path;
-        socket.emit('stopC5',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,LW:lnw,Path:p,StrSyl:context.strokeStyle})
+        socket.emit('stopC5',{MDX:mdx,MDY:mdy,MUX:mux,MUY:muy,Path:p})
     }
 
     //for eraser
@@ -413,7 +492,7 @@ function stop(event){
         draw_color = temp_draw_color; // to Restore the draw color when right click is released
         draw_shape = temp_draw_shape; // to Restore the draw shape when right click is released
         draw_width = temp_draw_width;
-        canvas.style.cursor = 'url(/Curser/pencil.svg) 4 100, auto';
+        d_canvas.style.cursor = 'url(/Curser/'+ draw_shape +'.svg) 4 100, auto';
         socket.emit('ErsC',{dc:draw_color,ds:draw_shape});
     }
 
@@ -422,26 +501,27 @@ function stop(event){
 
     //for undo
     if(event.type!="mouseout"){
-        restore_array.push(context.getImageData(0,0,canvas.width,canvas.height));
+        restore_array.push(d_context.getImageData(0,0,d_canvas.width,d_canvas.height));
         index1+=1;
     }
 }
 
 
 //clear button function
-function clear_canvas(){
-    context.fillStyle = start_background_color;
-    context.clearRect(0,0,canvas.width,canvas.height);
-    context.fillRect(0,0,canvas.width,canvas.height);
+function clear_canvas(){ //not  changed canvas
+    d_context.fillStyle = start_background_color;
+    d_context.clearRect(0,0,d_canvas.width,d_canvas.height);
+    d_context.fillRect(0,0,d_canvas.width,d_canvas.height);
 
     restore_array = [];
-    index1 = -1;
+    restore_array.push(d_context.getImageData(0,0,d_canvas.width,d_canvas.height));
+    index1 = 0;
     redo_array = [];
     index2 = -1;
 
     paths = [];
     paths_r = [];
-    socket.emit('clear_canvasC',{fs:context.fillStyle});
+    socket.emit('clear_canvasC',{fs:d_context.fillStyle});
 } 
     
 
@@ -453,26 +533,23 @@ function undo_last(){
         if(paths[paths.length-1]==restore_array[index1]){
             paths_r.push(paths[paths.length-1]);
             paths.pop();
+            var p=paths[paths.length-1];
         }
     }
-
-    if(index1==0){
+    if(index1>0){
         index2+=1;
         redo_array[index2] = restore_array[index1];
         index1-=1;
         restore_array.pop();
-        clear_canvas();
-    }
-    else if (index1>0){
-        index2+=1;
-        redo_array[index2] = restore_array[index1];
-        index1-=1;
-        restore_array.pop();
-        context.putImageData(restore_array[index1],0,0);    
-    }
+        d_context.putImageData(restore_array[index1],0,0);
+        let s = {
+            data: Array.from(restore_array[index1].data),
+            width: restore_array[index1].width,
+            height: restore_array[index1].height
+        };
+        socket.emit("UndoC",s);
 
-    
-    
+    }
 }
 
 //redo button function
@@ -489,7 +566,13 @@ function redo_last(){
         restore_array[index1]=redo_array[index2];
         index2-=1;
         redo_array.pop();
-        context.putImageData(restore_array[index1],0,0);
+        d_context.putImageData(restore_array[index1],0,0);
+        let s = {
+            data: Array.from(restore_array[index1].data),
+            width: restore_array[index1].width,
+            height: restore_array[index1].height
+        };
+        socket.emit("RedoC",s);
     }
 }
     
@@ -500,7 +583,7 @@ function redo_last(){
 
 //to download image
 function save_img(element){
-    let dataURL = canvas.toDataURL('image/png');
+    let dataURL = d_canvas.toDataURL('image/png');
     let link = document.createElement('a');
     link.download = 'my-image.png';
     link.href = dataURL;
@@ -510,8 +593,9 @@ function save_img(element){
 //socket function
 
 //clear
+
 socket.on('letclean',function(){
-    context.clearRect(0,0,canvas.width,canvas.height);
+    g_context.clearRect(0,0,g_canvas.width,g_canvas.height);
 })
 
 //color
@@ -532,116 +616,152 @@ socket.on('button2S',function(){
     temp_draw_shape = draw_shape;
     draw_color = "white";
     draw_shape = "pencil";
+    draw_width = 15;
 })
 //fillC1
 socket.on('fillS1',function(data){
-    context.fillStyle = data.FillStyle;
-    context.fill(data.Path);
-    //insidePath = true;
+    console.log("s1 called");
+    g_context.fillStyle = data.FillStyle;
+    g_context.fill(data.Path);
+    
 })
 socket.on('fillS2',function(data){
-    context.fillStyle =data;
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    console.log("s2 called");
+    g_context.fillStyle =data;
+    g_context.fillRect(0, 0, g_canvas.width, g_canvas.height);
 })
 socket.on('fillS3',function(data){
-    is_drawing = true;
-    context.beginPath();
-    context.moveTo(data.mX,data.mY);
+    g_context.beginPath();
+    g_context.moveTo(data.mX,data.mY);
 })
 socket.on('drawS',function(data){
-    context.lineTo(data.mX,data.mY)
-    context.strokeStyle =data.StrSyl;
-    context.lineWidth = data.LW;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.stroke();
+    g_context.lineTo(data.mX,data.mY)
+    g_context.strokeStyle =data.StrSyl;
+    g_context.lineWidth = data.LW;
+    g_context.lineCap = "round";
+    g_context.lineJoin = "round";
+    g_context.stroke();
 })
 socket.on('stopS1',function(data){
-    context.stroke();
-    context.closePath();
+    g_context.stroke();
+    g_context.closePath();
     data.Path.moveTo(data.MDX,data.MDY);
     data.Path.lineTo(data.MUX,data.MUY);
     paths.push(data.Path);
     is_drawing = false;
 })
 socket.on('stopS2',function(data){
-    context.lineTo(data.MUX,data.MUY);
-    context.strokeStyle =data.StrSyl;
-    context.lineWidth =data.LW;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.closePath();
-    context.stroke();
-    data.Path.moveTo(data.MDX,data.MDY);
-    data.Path.lineTo(data.MUX, data.MUY);
-    paths.push(data.Path);
-    is_drawing = false;
+    data.Path.moveTo(data.MDX, data.MDY);
+        data.Path.lineTo(data.MUX,data.MUY);
+        paths.push(data.Path);
+        is_drawing = false;
 })
 socket.on('stopS3',function(data){
-    context.rect(data.MDX, data.MDY, (data.MUX - data.MDX), (data.MUY - data.MDY));
-    context.strokeStyle = data.StrSyl;
-    context.lineWidth =data.LW;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.closePath();
-    context.stroke();
-    data.Path.rect(data.MDX, data.MDY, (data.MUX - data.MDX), (data.MUY - data.MDY));
-    paths.push(data.Path);
-    is_drawing = false;
+    data.Path.rect(data.MDX, data.MDY, (data.MUX-data.MDX), (data.MUY-data.MDY));
+        paths.push(data.Path);
+        is_drawing = false;
 })
 socket.on('stopS4',function(data){
-    let x_r = data.MDX + (data.MUX-data.MDX)/2;
-    let y_r =data.MDY + (data.MUY-data.MDY)/2;
-    let r = Math.sqrt(Math.pow((data.MUX-data.MDX)/2,2) + Math.pow((data.MUY-data.MDY)/2,2));
-    context.beginPath();
-    context.arc(x_r , y_r , r , 0 , 2*Math.PI);
-    context.strokeStyle = data.StrSyl;
-    context.lineWidth = data.LW;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.closePath();
-    context.stroke();
-    data.Path.arc(x_r,y_r,r,0,2*Math.PI);
-    paths.push(data.Path);
-    is_drawing = false;
+    data.Path.arc(data.MDX,data.MDY, data.radius, 0, 2 * Math.PI);
+        paths.push(data.Path);
+        is_drawing = false;
 })
 socket.on('stopS5',function(data){
-    context.beginPath();
-    context.moveTo(data.MDX,data.MDY);
-    context.lineTo(data.MUX,data.MUY);
-    context.lineTo(data.MDX - (data.MUX - mousedown_x),data.MUY);
-    context.lineTo(data.MDX,data.MDY);
-    context.strokeStyle = data.StrSyl;
-    context.lineWidth = data.LW;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.closePath();
-    context.stroke();
-    data.Path.moveTo(data.MDX,data.MDY);
-    data.Path.lineTo(data.MUX,data.MUY);
-    data.Path.lineTo(data.MDX - (data.MUX -data.MDX), data.MUY);
-    data.Path.lineTo(data.MDX,data.MDY);
+    data.Path.moveTo(data.MDX, data.MDY); 
+    data.Path.lineTo(data.MUX,data.MUY); 
+    data.Path.lineTo(data.MDX * 2 - data.MUX, data.MUY);
     data.Path.closePath();
     paths.push(data.Path);
     is_drawing = false;
 })
 socket.on('clear_canvasS',function(data){
-    context.fillStyle = data.fs;
-    context.clearRect(0,0,canvas.width,canvas.height);
-    context.fillRect(0,0,canvas.width,canvas.height);
+    g_context.fillStyle = data.fs;
+    g_context.clearRect(0,0,g_canvas.width,g_canvas.height);
+    g_context.fillRect(0,0,g_canvas.width,g_canvas.height);
 
-    restore_array = [];
-    index1 = -1;
-    redo_array = [];
-    index2 = -1;
+})
 
-    paths = [];
-    paths_r = [];
+socket.on("UndoS",function(s){
+    console.log("undo called");
+    let snapshot = new ImageData(new Uint8ClampedArray(s.data), s.width, s.height);
+       g_context.putImageData(snapshot,0,0);
+})
+socket.on("RedoS",function(s){
+    console.log("redo called");
+    let snapshot = new ImageData(new Uint8ClampedArray(s.data), s.width, s.height);
+    g_context.putImageData(snapshot,0,0);
 })
 socket.on('ErsS',function(data){
     draw_color=data.dc;
     draw_shape=data.ds;
 })
+
+socket.on("drawLineC",function(data){
+    g_context.beginPath(); 
+    g_context.strokeStyle = data.strstyl;
+    g_context.lineWidth = data.lw;
+    g_context.lineCap = "round";
+    g_context.lineJoin = "round";
+    g_context.moveTo(data.mdx, data.mdy); 
+    g_context.lineTo(data.eox,data.eoy); 
+    g_context.closePath();
+    g_context.stroke(); 
+})
+socket.on("lineExC",function(s){
+    console.log("function work");
+    let snapshot = new ImageData(new Uint8ClampedArray(s.data), s.width, s.height);
+    g_context.putImageData(snapshot, 0, 0);
+})
+socket.on("drawRectC",function(data){
+    g_context.beginPath();
+    g_context.strokeStyle = data.strstyl;
+    g_context.lineWidth = data.lw;
+    g_context.lineCap = "round";
+    g_context.lineJoin = "round";
+    g_context.rect(data.eox, data.eoy, data.mdx-data.eox, data.mdy-data.eoy); 
+    g_context.closePath();
+    g_context.stroke(); 
+})
+socket.on("RectExC",function(s){
+    console.log("function work");
+    let snapshot = new ImageData(new Uint8ClampedArray(s.data), s.width, s.height);
+    g_context.putImageData(snapshot, 0, 0);
+})
+socket.on("drawCircleC",function(data){
+    g_context.beginPath();
+    let radius = data.radius;
+    g_context.arc(data.mdx, data.mdy, radius, 0, 2 * Math.PI); 
+    g_context.strokeStyle = data.strstyl;
+    g_context.lineWidth = data.lw;
+    g_context.lineCap = "round";
+    g_context.lineJoin = "round";
+    g_context.stroke();
+    g_context.closePath();
+})
+socket.on("CircleExC",function(s){
+    console.log("function work");
+    let snapshot = new ImageData(new Uint8ClampedArray(s.data), s.width, s.height);
+    g_context.putImageData(snapshot, 0, 0);
+})
+socket.on("drawTriangleC",function(data){
+    g_context.beginPath();
+    g_context.strokeStyle = data.strstyl;
+    g_context.lineWidth = data.lw;
+    g_context.lineCap = "round";
+    g_context.lineJoin = "round";
+    g_context.moveTo(data.mdx,data.mdy); 
+    g_context.lineTo(data.eox,data.eoy); 
+    g_context.lineTo(data.mdx * 2 - data.eox, data.eoy); 
+    g_context.closePath(); 
+    g_context.stroke(); 
+})
+socket.on("TriangleExC",function(s){
+    console.log("function work t");
+    let snapshot = new ImageData(new Uint8ClampedArray(s.data), s.width, s.height);
+    g_context.putImageData(snapshot, 0, 0);
+})
+
+
 
 
 
@@ -690,7 +810,6 @@ function game_start(){
                 socket.emit('give_scoreC');
                 checkCompletion(); 
             }, (i - 1) * n * remaining_time * 1000 + (user - 1) * remaining_time * 1000);
-            socket.emit('givepermissionNTA');
         }
     }
 }
@@ -707,9 +826,38 @@ function checkCompletion() {
 //-------------------------give word javascript------------------------
 socket.on('giveWordS',function(data){
     setTimeout(function(){
-        if(data[0]!=='_')
+        if(data[0]!=='_'){
         guess_word=data;
+        document.getElementById("d_canvas").style.display = "block";
+        document.getElementById("g_canvas").style.display = "none";
+        d_context.clearRect(0,0,d_canvas.width,d_canvas.height);
+        d_context.fillRect(0,0,d_canvas.width,d_canvas.height);
+        restore_array = [];
+        restore_array.push(d_context.getImageData(0,0,d_canvas.width,d_canvas.height));
+        index1 = 0;
+        redo_array = [];
+        index2 = -1;
+    
+        paths = [];
+        paths_r = [];
+        draw_shape="pencil";
+        d_canvas.style.cursor = 'url(/Curser/pencil.svg) 4 100, auto';
+        let other_items = document.getElementsByClassName("shape-field");
+        for(let i = 0; i < other_items.length; i++){
+        other_items[i].classList.remove("selected");
+        }
+        document.getElementById("pencil").classList.add("selected");
+        
+        }
+        else{
+            document.getElementById("d_canvas").style.display = "none";
+            document.getElementById("g_canvas").style.display = "block";
+            g_context.clearRect(0,0,g_canvas.width,g_canvas.height);
+            g_context.fillRect(0,0,g_canvas.width,g_canvas.height);  
+            
+        }
 
+        
         document.getElementById('new-game').innerHTML='';
         
         document.getElementById('Word').innerHTML='<h1>'+ data + ' </h1>';
@@ -736,3 +884,5 @@ function toggleAudio() {
         audioIcon.className = "fa-solid fa-volume-xmark fa-xl";
     }
 }
+
+
