@@ -270,6 +270,14 @@ p{
     position: relative;
     left: 60px;
 }
+.leave{
+    position: absolute;
+    left: 650px;
+    background-color: rgb(0, 157, 255);
+    color: white;
+    font-family: 'Architects Daughter', cursive;
+
+}
 
 canvas{
     height:100%;
