@@ -26,9 +26,9 @@ app.get("/HTML/index.html",function(req,res){
    res.sendFile(__dirname+"/HTML/index.html");
 });
 app.get("/HTML/gamepage.html",function(req,res){
-//   if(user_n){
+   if(user_n){
    res.sendFile(__dirname+"/HTML/gamepage.html");
-//   user_n="";}
+   user_n="";}
 });
 app.get('/CSS/index-style.css',function(req,res){
    res.sendFile(__dirname+"/CSS/index-style.css");
@@ -146,7 +146,7 @@ app.get('/Curser/eraser-solid.svg',function(req,res){
 
  app.get('/getProfileData', (req, res) => {
    if (req.session.user) {
-     res.json(req.session.user); // Send user data to client
+     res.json(req.session.user); // Sending user data to client
    } else {
      res.status(401).send('Not logged in');
    }
@@ -167,9 +167,11 @@ broadcastt=[];
 SID=[];
 let myMap1=new Map();
 let myMap2=new Map();
+let positionMap=new Map([...myMap2.entries()].sort((a,b)=>b[1]-a[1]));
 arr1=['apple', 'banana', 'car', 'dog', 'elephant', 'fan', 'grape', 'hat', 'ice cream', 'jacket', 'kettle', 'lamp', 'mango', 'notebook', 'orange', 'pencil', 'rabbit', 'spoon', 'table', 'umbrella', 'vase', 'watermelon', 'xylophone', 'yacht', 'zebra', 'ant', 'ball', 'cat', 'duck', 'eagle', 'fish', 'giraffe', 'horse', 'iguana', 'jackal', 'kangaroo', 'lion', 'monkey', 'nest', 'owl', 'parrot', 'quail', 'rat', 'snake', 'tiger', 'unicorn', 'vulture', 'wolf', 'x-ray fish', 'yak', 'zebu', 'airplane', 'boat', 'cycle', 'drum', 'earphone', 'flute', 'guitar', 'harmonica', 'ipad', 'juicer', 'keyboard', 'laptop', 'mobile', 'nail cutter', 'oven', 'piano', 'quiver', 'ruler', 'scissors', 'television', 'utensils', 'violin', 'washing machine', 'xerox machine', 'yoyo', 'zipper', 'alarm clock', 'basket', 'candle', 'diary', 'eraser', 'fork', 'glass', 'hammer', 'ink', 'jug', 'knife', 'lock', 'mirror', 'needle', 'oil can', 'pillow', 'quartz', 'rose', 'soap', 'toothbrush', 'umbrella', 'violin', 'wallet', 'xmas tree', 'yogurt', 'zip'];
 guessed_users=[];
 var user_id;
+var guess_t=0;
 
 var socket1;
 io.on('connection',function(socket){
@@ -198,6 +200,7 @@ socket.on('feed-d',function(data){
    console.log("in SID"+data.Sid);
    myMap1.set(data.Sid,data.U);
    myMap2.set(data.U,0);
+   positionMap=new Map([...myMap2.entries()].sort((a,b)=>b[1]-a[1]));
 })
   
  socket.on('setUsername',function(data){
@@ -241,15 +244,23 @@ socket.on('giveWordC',function(data){
    random_word=arr1[Math.floor(Math.random()*arr1.length)];
    random_word_sign="";
    for(let i=0;i<random_word.length;i++){
-      random_word_sign+="_ ";
+      if(random_word[i]===' '){
+        random_word_sign+="  ";
+      }
+      else{
+      random_word_sign+="_ ";}
    }
-   io.to(SID[data.User-1]).emit('giveWordS',random_word);
-
+   var userturn=myMap1.get(SID[data.User-1]);
+   io.to(SID[data.User-1]).emit('giveWordS',{guess_word:"",word:random_word,user:userturn});
+   
    var socket_t = io.sockets.sockets.get(SID[data.User-1]);
-   socket_t.broadcast.emit('giveWordS',random_word_sign);
+   socket_t.broadcast.emit('giveWordS',{guess_word:random_word,word:random_word_sign,user:userturn});
 
 
 }) 
+socket.on("guess_time",function(data){
+  guess_t=data;
+})
 // ---------------------------new draw board javascript-----------------------
 socket.on('change_shapeC',function(data){
    socket.broadcast.emit('change_shapeS',data);
@@ -303,7 +314,7 @@ socket.on('word_guessC',function(data){
 socket.on('give_scoreC',function(){
    for(let i=0;i<guessed_users.length;i++){
       var g_u=guessed_users[i];
-      io.sockets.emit('give_scoreS',g_u);
+      io.sockets.emit('give_scoreS',{g:g_u,t:guess_t});
    }
    guessed_users.length=0;
 })
@@ -342,11 +353,26 @@ socket.on("UndoC",function(data){
 socket.on("RedoC",function(data){
   socket.broadcast.emit("RedoS",data);
 })
+/// result board socket////////////////////////////
+socket.on("displayResultS",function(){
+  socket.broadcast.emit('displayResultC');
+})
+socket.on("showResultS",function(data){
+  arr=[];
+  positionMap.forEach((value, key) => {
+  arr.push(key);
+  });
+  io.sockets.emit("showResultC",{first:arr[0],second:arr[1],third:arr[2]});
+})
+socket.on("removeplayerS",function(data){
+  socket.broadcast.emit("removeplayerC",data);
+})
 //---------------------------profile page socket work------------------------------------------//
 
 //---------------------------profile page data updation--------------------------//
 socket.on('updateScore',function(data){
    myMap2.set(data.u,data.value);
+   positionMap=new Map([...myMap2.entries()].sort((a,b)=>b[1]-a[1]));
 })
 socket.on('id-name',function(data){
    users.push(data);
@@ -386,11 +412,17 @@ socket.on('updateprofile',async function(data){
 });
 
 app.use(express.urlencoded({extended:false}))
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 app.post("/signup", async (req, res) => {
+   const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
+
    const data = {
      name: req.body.name,
-     password: req.body.password,
+     password: passwordHash,
    };
+
    const profileInitialise={
       name:req.body.name,
       profileimg:1,
@@ -405,28 +437,34 @@ app.post("/signup", async (req, res) => {
          lastposition:0,
          slastposition:0,
          tlastposition:0,
-
       }
    };
+
    await collection.insertMany([data]);
    await profile.insertMany([profileInitialise]);
    res.redirect("/HTML/login.html");
- });
+});
+
  
- app.post("/login", async (req, res) => {
-   try {
-     const check = await collection.findOne({ name: req.body.name });
-     if (check && check.password == req.body.password) {
-      const user=await profile.findOne({name:req.body.name});
-      req.session.user =user; // Save user data in session
-      res.redirect("/HTML/profile.html");
-     } else {
+app.post("/login", async (req, res) => {
+  try {
+    const check = await collection.findOne({ name: req.body.name });
+    if (check) {
+      const match = await bcrypt.compare(req.body.password, check.password);
+      if (match) {
+        const user=await profile.findOne({name:req.body.name});
+        req.session.user =user; // Save user data in session
+        res.redirect("/HTML/profile.html");
+      } else {
+        res.redirect("/HTML/login.html");
+      }
+    } else {
       res.redirect("/HTML/login.html");
-     }
-   } catch (error) {
-     res.send("Error in login. Please try again.");
-   }
- });
+    }
+  } catch (error) {
+    res.send("Error in login. Please try again.");
+  }
+});
 //profile page database_________
 
 
