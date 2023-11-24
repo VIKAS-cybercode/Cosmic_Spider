@@ -63,6 +63,9 @@ body {
   /* height: 30%; */
   /* gap: 20px; */
 }
+.logo{
+  width:500px;
+}
 .password{
   display: flex;
   flex-direction: row;

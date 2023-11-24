@@ -113,7 +113,9 @@ canvas{
     color: white;
     font-size: 30px;
 }
-
+.btn{
+    background-color: gold;
+}
 .pop-up {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
