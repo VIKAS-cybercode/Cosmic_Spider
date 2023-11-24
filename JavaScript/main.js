@@ -1,6 +1,7 @@
 var socket=io();
         var user=localStorage.getItem('user-name');
         var guess_word="";
+        var drawer="";
         //---------------/
         
         socket.on('connect',function(){
@@ -9,12 +10,13 @@ var socket=io();
         })
 
 
-
+var divs=document.getElementById("result");
+divs.style.display="none";
         /*--------leaderBoard javascript-----*/
         socket.emit('setL',user);
         socket.on('setLead',function(data){
             
-            document.getElementById('leaderBoard').innerHTML+='<div class="left-player" id="'+data+'left-player"><div id="'+data+'" class="board-div"><h1 id="player-name">'+data+'       '+'<span id="'+data+'S">' + 0 + '</span>pts</h1></div></div>';
+            document.getElementById('leaderBoard').innerHTML+='<div class="left-player" id="'+data+'left-player"></div><div id="'+data+'" class="board-div"><h1 id="player-name">'+data+'       '+'<div class="points"><span  id="'+data+'S">' + 0 + '</span>pts</h1></div></div></div></div>';
         });
         socket.on('user-disconnected', function(data) {
             console.log('User disconnected: ' + data.SD);
@@ -39,14 +41,18 @@ var socket=io();
             
             if (message !== '') {
                 document.getElementById('message').value = '';
-                socket.emit('msg', { message: message, user: user });
+                console.log(message+" **"+guess_word);
+                if(message!==guess_word){
+                socket.emit('msg', { message: message, user: user });}
+                else{
+                socket.emit('word_guessC', user);}
             }
         }
         
         socket.on('newmsg', function (data) {
             if (user) {
-                if (data.message !== guess_word) {
-                    // Create a new message element
+                
+                
                     var messageElement = document.createElement('div');
                     messageElement.style.color = 'black';
                     messageElement.innerHTML = '<b class="user-message">' + data.user + '</b>: ' + data.message;
@@ -56,17 +62,17 @@ var socket=io();
         
                     // Scroll to the bottom of the chat container to show the latest message
                     document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
-                } else {
-                    socket.emit('word_guessC', data.user);
-                }
+                
             }
         });
 
         
         
-
+var t=2;
 socket.on('word_guessS',function(data){
+     t=Number(document.getElementById("run_time").innerHTML);
     document.getElementById('chat-container').innerHTML+='<div style="color:green;"><b>'+data+' guessed the word!</b></div>';
+    socket.emit("guess_time",t);
 })
 var textBox=document.getElementById("message");
 var buton=document.getElementById("sent");
@@ -767,7 +773,7 @@ socket.on("TriangleExC",function(s){
 
 let start_time;
 let remaining_time = 30;
-let n = 0; // replace with the number of users
+let n = 0; //  number of users
 let timer;
 
 function startTimer() {
@@ -781,7 +787,7 @@ function startTimer() {
             document.getElementById('clock').innerHTML = 'Time\'s up!';
             endSound.play();
         } else {
-            document.getElementById('clock').innerHTML = '<p id="running-time">'+ remaining_time + ' seconds remaining</p>';
+            document.getElementById('clock').innerHTML = '<p id="running-time"><span id="run_time">'+ remaining_time + '</span> seconds remaining </p>';
             tickSound.play();
         }
     }, 1000);
@@ -802,32 +808,49 @@ socket.on('setU_S',function(data){
 let completionCounter=0;
 function game_start(){
     socket.emit('setU_C');
+    if(n>1){
     for(let i=1; i<=3; i++){        
         for(let user=1; user<=n; user++){
             setTimeout(function() {
                 socket.emit('giveWordC',{round :i,User:user});
                 socket.emit('socketRoundC',{round:i,User:user}); 
-                socket.emit('give_scoreC');
+                socket.emit('give_scoreC',drawer);
                 checkCompletion(); 
             }, (i - 1) * n * remaining_time * 1000 + (user - 1) * remaining_time * 1000);
         }
-    }
+    }}
 }
 function checkCompletion() {
     completionCounter++;
 
     if (completionCounter === 3 * n) {
-      socket.emit('updateprofile');
+        setTimeout(function(){
+            socket.emit('give_scoreC',drawer);
+            divs.style.display="block";
+            socket.emit("displayResultS");
+            socket.emit("showResultS");
+            socket.emit('updateprofile');
+        },30*1000);
+      
+      
     }
   }
 
-
+//// result board javascript
+socket.on("displayResultC",function(){
+    divs.style.display="block";
+})
+socket.on("showResultC",function(data){
+   document.getElementById("first").innerHTML='#1.  '+data.first;
+   document.getElementById("second").innerHTML='#2.  '+data.second;
+   document.getElementById("third").innerHTML='#3.  '+data.third;
+})
 
 //-------------------------give word javascript------------------------
 socket.on('giveWordS',function(data){
     setTimeout(function(){
-        if(data[0]!=='_'){
-        guess_word=data;
+        if(data.word[0]!=='_'){
+        drawer=data.user;
         document.getElementById("d_canvas").style.display = "block";
         document.getElementById("g_canvas").style.display = "none";
         d_context.clearRect(0,0,d_canvas.width,d_canvas.height);
@@ -856,20 +879,28 @@ socket.on('giveWordS',function(data){
             g_context.fillRect(0,0,g_canvas.width,g_canvas.height);  
             
         }
-
-        
+        guess_word=data.guess_word;
+        var elements = document.getElementsByClassName("board-div");
+         for(var i = 0; i < elements.length; i++) {
+        elements[i].style.backgroundColor = "#fff";
+         }
+        document.getElementById(data.user).style.backgroundColor="#FFC5C5";
         document.getElementById('new-game').innerHTML='';
         
-        document.getElementById('Word').innerHTML='<h1>'+ data + ' </h1>';
+        document.getElementById('Word').innerHTML='<h1>'+ data.word + ' </h1>';
         document.getElementById('clock-icon').innerHTML='<i class="fa-regular fa-clock fa-beat fa-2xl" style="color: #ffd700;"></i>';
     },(data.round - 1) * n * remaining_time * 1000 + (data.User - 1) * remaining_time * 1000);
     });
 
 //----------------------score distribution javascript------------------------
 socket.on('give_scoreS',function(data){
-       var value=Number(document.getElementById(data+'S').innerHTML)+5;
-       document.getElementById(data+'S').innerHTML=value;
-       socket.emit("updateScore",{u:data,value:value});
+       
+       console.log(data.t);
+       var value=Number(document.getElementById(data.g+'S').innerHTML)+(data.t*2);
+       console.log(data.g+" "+drawer);
+       
+       document.getElementById(data.g+'S').innerHTML=value;
+       socket.emit("updateScore",{u:data.g,value:value});
 })
 
 var audio = document.getElementById("myAudio");
@@ -885,4 +916,14 @@ function toggleAudio() {
     }
 }
 
-
+function playAgain(){
+    localStorage.setItem('user-name', user);
+    window.location.href = "/HTML/gamepage.html";
+}
+function exit(){
+    socket.emit("removeplayerS",user);
+    window.location.href="/HTML/index.html";
+}
+socket.on("removeplayerC",function(data){
+    document.getElementById(user+'left-player').innerHTML='';
+})
