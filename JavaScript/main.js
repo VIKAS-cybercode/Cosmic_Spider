@@ -1,5 +1,13 @@
 var socket=io();
-        var user=localStorage.getItem('user-name');
+       //getting user name and room name from url
+const{name,Roomname}=Qs.parse(location.search,{
+    ignoreQueryPrefix:true
+});
+console.log(name,Roomname);
+var user=name;
+
+socket.emit('joinRoom',{name,Roomname});
+socket.emit('setL',user);
         var guess_word="";
         var drawer="";
         //---------------/
@@ -13,10 +21,10 @@ var socket=io();
 var divs=document.getElementById("result");
 divs.style.display="none";
         /*--------leaderBoard javascript-----*/
-        socket.emit('setL',user);
-        socket.on('setLead',function(data){
-            
-            document.getElementById('leaderBoard').innerHTML+='<div class="left-player" id="'+data+'left-player"></div><div id="'+data+'" class="board-div"><h1 id="player-name">'+data+'       '+'<div class="points"><span  id="'+data+'S">' + 0 + '</span>pts</h1></div></div></div></div>';
+
+socket.on('setLead',function(data){
+            console.log("setL emitted");
+            document.getElementById('leaderBoard').innerHTML+='<div class="left-player" id="'+data+'left-player"><div id="'+data+'" class="board-div"><h1 id="player-name">'+data+'       '+'<div class="points"><span  id="'+data+'S">' + 0 + '</span>pts</h1></div></div></div>';
         });
         socket.on('user-disconnected', function(data) {
             console.log('User disconnected: ' + data.SD);
@@ -25,7 +33,6 @@ divs.style.display="none";
             // Update the HTML as needed
             if (userElement) {
                  document.getElementById(data.usd+'left-player').innerHTML='';
-                 console.log(data.usd);
                  document.getElementById('chat-container').innerHTML+='<div class="chat-player-left" style="color:red;">'+data.usd+' left the game!</div>';
             }
         });
@@ -51,8 +58,6 @@ divs.style.display="none";
         
         socket.on('newmsg', function (data) {
             if (user) {
-                
-                
                     var messageElement = document.createElement('div');
                     messageElement.style.color = 'black';
                     messageElement.innerHTML = '<b class="user-message">' + data.user + '</b>: ' + data.message;
@@ -72,7 +77,7 @@ var t=2;
 socket.on('word_guessS',function(data){
      t=Number(document.getElementById("run_time").innerHTML);
     document.getElementById('chat-container').innerHTML+='<div style="color:green;"><b>'+data+' guessed the word!</b></div>';
-    socket.emit("guess_time",t);
+    socket.emit("guess_time",{user:user,t:t});
 })
 var textBox=document.getElementById("message");
 var buton=document.getElementById("sent");
@@ -778,17 +783,17 @@ let timer;
 
 function startTimer() {
     start_time = Date.now();
-    let endSound = new Audio('/media/time_up.mp3');
-    let tickSound = new Audio('tick_tick.mp3');
+    //let endSound = new Audio('/media/time_up.mp3');
+    //let tickSound = new Audio('tick_tick.mp3');
     return setInterval(function() {
         let elapsed_time = Math.floor((Date.now() - start_time) / 1000);
         remaining_time = 30 - elapsed_time;
         if (remaining_time <= 0) {
             document.getElementById('clock').innerHTML = 'Time\'s up!';
-            endSound.play();
+            //endSound.play();
         } else {
             document.getElementById('clock').innerHTML = '<p id="running-time"><span id="run_time">'+ remaining_time + '</span> seconds remaining </p>';
-            tickSound.play();
+            //tickSound.play();
         }
     }, 1000);
 }
@@ -810,13 +815,13 @@ function game_start(){
     socket.emit('setU_C');
     if(n>1){
     for(let i=1; i<=3; i++){        
-        for(let user=1; user<=n; user++){
+        for(let u=1; u<=n; u++){
             setTimeout(function() {
-                socket.emit('giveWordC',{round :i,User:user});
+                socket.emit('giveWordC',{round :i,U:u,user:user});
                 socket.emit('socketRoundC',{round:i,User:user}); 
                 socket.emit('give_scoreC',drawer);
                 checkCompletion(); 
-            }, (i - 1) * n * remaining_time * 1000 + (user - 1) * remaining_time * 1000);
+            }, (i - 1) * n * remaining_time * 1000 + (u - 1) * remaining_time * 1000);
         }
     }}
 }
