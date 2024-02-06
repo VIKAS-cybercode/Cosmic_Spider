@@ -1,5 +1,5 @@
 const mongoose=require("mongoose")
-mongoose.connect("mongodb://localhost:27017/loginT")
+mongoose.connect("mongodb+srv://acfirst75:bVtEoku5B2GSamX3@cosmicspider.dvcr6sp.mongodb.net/?retryWrites=true&w=majority")
 .then(() =>{
     console.log("connected");
 })
@@ -10,7 +10,8 @@ mongoose.connect("mongodb://localhost:27017/loginT")
 const loginSchema=new mongoose.Schema({
     name:{
         type:String,
-        require:true
+        require:true,
+        unique:true
     },
     email:{
         type:String,
@@ -18,6 +19,10 @@ const loginSchema=new mongoose.Schema({
     },
     password:{
         type:String,
+        require:true
+    },
+    online:{
+        type:Number,
         require:true
     }
 
