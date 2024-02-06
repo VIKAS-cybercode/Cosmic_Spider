@@ -37,15 +37,15 @@ function setUsername() {
         socket.emit('setUsername', document.getElementById('name').value);
     }
 }
-var user;
+
 socket.on('user_exist', function (data) {
     document.getElementById('exist-error').innerHTML = data;
 });
-socket.on('setUser', function (data) {
-    user = data.username;
-    localStorage.setItem('user-name', user);
-    window.location.href = "/HTML/gamepage.html";
-});
+// socket.on('setUser', function (data) {
+//     user = data.username;
+    
+//     //window.location.href = "/HTML/gamepage.html";
+// });
 
 
 
