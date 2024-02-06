@@ -90,7 +90,11 @@
           </div>
     
         </div>
-        <button type="button" class="btn btn-success btn-lg" id="" onclick="gameEnter()"><h1>P L A Y !</h1></button>
+        <form action="/HTML/gamepage.html" id="myForm" onsubmit="gameEnter()">
+          <input type="hidden" id="n" name="name" value="">
+        <input type="text" id="Roomname" name="Roomname" class="form-control" placeholder="Enter room name" maxlength="10">
+        <button type="submit" class="btn btn-success btn-lg" id="" onclick="gameEnter()"><h1>P L A Y !</h1></button>
+        </form>
       </div>
 
       
