@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(response => response.json())
       .then(data => {
         userr=data.name;
-        console.log(data);
+       // console.log(data);
         document.getElementById('profile').textContent = data.name;
         document.getElementById("profileImage").src ="/media/image"+data.profileimg+ ".jpg"; ;
         document.getElementById("TGP").innerHTML=data.TotalGP;
@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
        const lgp=data.last3position.lastposition;
        const sgp=data.last3position.slastposition;
        const tgp=data.last3position.tlastposition;
-      document.getElementById("lgp").innerHTML=lgp;
-      document.getElementById("sgp").innerHTML=sgp;
-      document.getElementById("tgp").innerHTML=tgp;
+      // document.getElementById("lgp").innerHTML=lgp;
+      // document.getElementById("sgp").innerHTML=sgp;
+      // document.getElementById("tgp").innerHTML=tgp;
       const lgame=data.last3game.lastgame;
        const slgame=data.last3game.slastgame;
         const tlgame=data.last3game.tlastgame;
@@ -24,12 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
        document.getElementById("lgs").innerHTML=lgame;
        document.getElementById("sgs").innerHTML=slgame;
        document.getElementById("tgs").innerHTML=tlgame;
+
+       document.getElementById("n").value=data.name;
       });
 });
 function gameEnter(){
-localStorage.setItem('user-name', userr);
-socket.emit('id-name',userr);
-window.location.href = "/HTML/gamepage.html";
+  
+  socket.emit('id-name',userr);
+  console.log("emitted");
+  window.location.href = window.location.href + '&?name=' + userr;
 }
 function openForm() {
     document.getElementById("myForm").style.display = "block";
@@ -61,3 +64,22 @@ function openForm() {
     closeForm();
    
   }
+
+ 
+
+  window.addEventListener('beforeunload', async function (event) {
+    // Check if the user is navigating to a different domain
+      try {
+        // Send an asynchronous request to your server to update online status to 0
+        await fetch('/logout', {
+          method: 'GET',
+          credentials: 'include', // Include cookies in the request
+        });
+      } catch (error) {
+        console.error('Error updating online status:', error);
+      }
+    
+  });
+
+ 
+
