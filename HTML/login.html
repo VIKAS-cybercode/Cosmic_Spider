@@ -21,7 +21,7 @@
   <div class="page">
     <a href="/HTML/index.html" class="logo-link"><img class="logo" src="/media/logo-gamepage.gif" alt=""></a>
     <div class="login">
-      <form action="/login" method="post" class="login-form">
+      <form action="" method="" id="loginForm" class="login-form">
         <h1 class="title">Login</h1>
         <div class="login-fields">
           <div class="login-box">
@@ -47,6 +47,45 @@
       </form>
   </div>
   </div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent form submission
+
+    const formData = new FormData(event.target); // Get form data
+    const name = formData.get('name');
+    const password = formData.get('password');
+    
+    // try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, password })
+      });
+
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        // Store token in local storage
+        sessionStorage.setItem('token', responseData.token);
+        console.log(sessionStorage.getItem('token'));
+        // Redirect or update UI as needed
+        console.log("%%");
+        window.location.href='/HTML/profile.html';
+       } 
+    //else {
+    //     console.error('Login failed:', responseData.message);
+    //     // Display error message to the user
+    //   }
+    // } catch (error) {
+    //   console.error('Error during login:', error.message);
+    //   // Handle any network or server errors
+     
+  });
+ 
+</script>
 </body>
 
 </html>
