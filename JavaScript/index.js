@@ -110,4 +110,15 @@ canvas.addEventListener("mouseout", () => {
 }); 
 
 
+function validateForm(event) {
+    const name = document.getElementById("name").value;
+    const roomName = document.getElementById("Roomname").value;
+
+    if (name === "" || roomName === "") {
+        alert("Both fields must be filled out.");
+        event.preventDefault();
+    } else {
+        setUsername();
+    }
+}
 
