@@ -110,15 +110,39 @@ canvas.addEventListener("mouseout", () => {
 }); 
 
 
-function validateForm(event) {
+
+async function validateForm(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+
     const name = document.getElementById("name").value;
     const roomName = document.getElementById("Roomname").value;
 
     if (name === "" || roomName === "") {
         alert("Both fields must be filled out.");
-        event.preventDefault();
-    } else {
-        setUsername();
+        return false;
+    }
+
+    try {
+        const response = await fetch('/check-name', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        const result = await response.json();
+
+        if (result.exists) {
+            alert("Name already exists");
+            return false;
+        } else {
+            setUsername();
+        }
+    } catch (error) {
+        console.error("Error checking name:", error);
+        alert("An error occurred while checking the name. Please try again later.");
+        return false;
     }
 }
 
