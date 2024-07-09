@@ -144,13 +144,21 @@ app.get('/Curser/eraser-solid.svg',function(req,res){
   res.sendFile(__dirname+"/HTML/gmail.svg");
 })
 
- app.get('/getProfileData', (req, res) => {
-   if (req.session.user) {
-     res.json(req.session.user); // Sending user data to client
-   } else {
-     res.status(401).send('Not logged in');
-   }
- });
+app.post('/getProfileData', async (req, res) => {
+  try {
+      const { token } = req.body;
+      const user = await profile.findOne({name:token });
+
+      if (user) {
+          res.json(user);
+      } else {
+          res.status(404).json({ error: "User not found" });
+      }
+  } catch (error) {
+      console.error("Error fetching profile data:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
  app.put('/update', async (req, res) => {
   await profile.updateOne(
@@ -221,6 +229,7 @@ socket.on('feed-d',function(data){
    positionMap=new Map([...myMap2.entries()].sort((a,b)=>b[1]-a[1]));
 })
   
+  
  socket.on('setUsername',function(data){
     console.log(data+'**user connected '+socket.id); 
     const u =  profile.findOne({ name:data });
@@ -230,6 +239,7 @@ socket.on('feed-d',function(data){
     else{
         users.push(data);
         // socket.emit("setUser",{username:data});
+        console.log("&");
         
     }
  })
@@ -471,6 +481,7 @@ socket.on('updateprofile',async function(data){
             { $set: { 'TotalGP': totalgame } }
           );
           var highscore=u.HighestScore;
+          console.log(highscore);
           if(Number(myMap2.get(u.name))>highscore){
             highscore=Number(myMap2.get(u.name));
           }
@@ -547,12 +558,12 @@ app.post("/login", async (req, res) => {
       if (match && check.online===0 && index1<0) {
         const user=await profile.findOne({name:req.body.name});
 
-        req.session.user =user; // Save user data in session
+        // req.session.user =user;  Save user data in session
         await collection.updateOne(
          { name: req.body.name },
          { $set: { 'online': 1 } },
        );
-        res.redirect("/HTML/profile.html");
+       res.send({ "status": "success", "message": "Login Success", "token": req.body.name })
       } else {
         res.redirect("/HTML/login.html");
       }
@@ -567,7 +578,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/logout", async (req, res) => {
   try {
-    const userName = req.session.user.name;
+    const userName = req.query.token;
 
     // Update the user's online status to 0 when logging out
     await collection.updateOne(
@@ -576,13 +587,26 @@ app.get("/logout", async (req, res) => {
     );
 
     // Clear the user data from the session
-    req.session.user = null;
+    //req.session.user = null;
 
     res.redirect("/HTML/login.html");
   } catch (error) {
     res.send("Error in logout. Please try again.");
   }
 });
+
+
+
+app.post('/check-name', async (req, res) => {
+  const check = await collection.findOne({ name: req.body.name });
+  if (check) {
+    res.json({ exists: true });
+} else {
+    res.json({ exists: false });
+}
+});
+
+
 
 
 http.listen(3212,function(){
