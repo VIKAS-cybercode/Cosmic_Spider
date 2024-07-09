@@ -138,6 +138,8 @@ async function validateForm(event) {
             return false;
         } else {
             setUsername();
+            // Submit the form programmatically if validation passes
+            document.getElementById("gameForm").submit();
         }
     } catch (error) {
         console.error("Error checking name:", error);
@@ -145,4 +147,5 @@ async function validateForm(event) {
         return false;
     }
 }
+
 
