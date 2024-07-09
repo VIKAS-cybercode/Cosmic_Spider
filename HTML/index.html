@@ -34,10 +34,10 @@
         <div class="home-middle">
             <div class="container">
                 <div id="exist-error"></div>
-                <form action="/HTML/gamepage.html">
+                <form action="/HTML/gamepage.html" onsubmit="validateForm(event)">
                 <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" maxlength="10">
                 <input type="text" id="Roomname" name="Roomname" class="form-control" placeholder="Enter room name" maxlength="10">
-                <button type="submit" onclick="setUsername()" class="btn btn-success btn-lg pag-button" id="work"
+                <button type="submit"  class="btn btn-success btn-lg pag-button" id="work"
                     onclick=""><strong>Play as
                         guest</strong></button></form>
                 <a href="/HTML/login.html"><button type="button" class="btn btn-primary btn-lg login-button"><strong>L O
